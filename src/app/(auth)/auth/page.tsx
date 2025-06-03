@@ -1,1 +1,3 @@
-const AuthPage = () => {};
+const AuthPage = () => {
+  return <main></main>;
+};
