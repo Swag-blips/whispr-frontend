@@ -31,6 +31,9 @@ const OtpInputs = () => {
     if (e.key === "Enter" && e.currentTarget.value && index < 5 - 1) {
       otpBoxReference.current[index + 1].focus();
     }
+    if (e.key === "ArrowRight" && e.currentTarget.value && index < 5 - 1) {
+      otpBoxReference.current[index + 1].focus();
+    }
   };
 
   useEffect(() => {
@@ -45,8 +48,6 @@ const OtpInputs = () => {
       setOtpError(null);
     }
   }, [otp]);
-
-  console.log("otp", otp);
 
   return (
     <div className="mt-10">

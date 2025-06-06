@@ -1,12 +1,15 @@
 import { ArrowLeft } from "lucide-react";
 import React from "react";
 import OtpInputs from "./components/OtpInputs";
+import Link from "next/link";
 
 const OtpPage = () => {
   return (
     <div className="">
-      <nav className="py-4 px-3">
-        <ArrowLeft />
+      <nav className="py-4 px-3">  
+        <Link href={"/auth"}>
+          <ArrowLeft />
+        </Link>
       </nav>
       <main className="flex items-center justify-center h-[calc(100vh-64px)]  flex-col gap-2">
         <h2 className=" text-[32px] font-bold text-center ">
