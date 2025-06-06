@@ -13,7 +13,6 @@ const Button = () => {
       setCountDown((countDown) => countDown - 1);
     }, 1000);
 
-    console.log("COUNTDOWN HERE", countDown);
     if (countDown <= 0) {
       clearInterval(timerId);
     }

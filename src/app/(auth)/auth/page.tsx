@@ -1,7 +1,6 @@
 import Apple from "@/app/components/icons/Apple";
 import Facebook from "@/app/components/icons/Facebook";
 import Google from "@/app/components/icons/Google";
-import Image from "next/image";
 import { AuthForm } from "./components/AuthForm";
 
 const AuthPage = () => {

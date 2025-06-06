@@ -1,10 +1,56 @@
 "use client";
 
 import { useState } from "react";
+import { validateSignup } from "../utils/validate";
+import { register } from "@/app/actions/auth/auth";
+import toast from "react-hot-toast";
 
 type ActiveTab = "signup" | "login";
 export const AuthForm = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>("signup");
+
+  const [signupData, setSignupData] = useState({
+    username: "",
+    bio: "",
+    email: "",
+    password: "",
+  });
+
+  const handleSignup = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const validate = validateSignup(signupData);
+
+    const payload = {
+      username: signupData.username.trim().replace(/\s/g, ""),
+      email: signupData.email.trim().replace(/\s/g, ""),
+      password: signupData.password.trim().replace(/\s/g, ""),
+      ...(signupData.bio.trim() && {
+        bio: signupData.bio.trim().replace(/\s/g, ""),
+      }),
+    };
+
+    if (validate) {
+      try {
+        const response = await register(payload);
+
+        if (response.success) {
+          toast.success(response.message);
+        } else if (!response.success && response.details) {
+          toast.error(response.details || "An error occured");
+        } else {
+          toast.error(response.message);
+        }
+      } catch (error) {
+        console.error(error);
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
+      }
+    } else {
+      return;
+    }
+  };
+
   return (
     <>
       <div className="bg-[#F0EFF2] w-[390px] px-1 mt-10 rounded-lg h-14 flex items-center justify-between">
@@ -34,6 +80,9 @@ export const AuthForm = () => {
                 type="text"
                 id="username"
                 name="username"
+                onChange={(e) =>
+                  setSignupData({ ...signupData, username: e.target.value })
+                }
                 className="border-[#D9D9D9] outline-[#444CE7] placeholder:text-[#C4C4C4] placeholder-text-sm border-[0.5px] rounded-lg py-3 pl-3"
                 placeholder="Enter your username"
               />
@@ -46,6 +95,9 @@ export const AuthForm = () => {
                 name="bio"
                 className="border-[#D9D9D9] outline-[#444CE7] placeholder-font-normal placeholder:text-[#C4C4C4] placeholder-text-sm border-[0.5px] rounded-lg py-3 pl-3"
                 placeholder="Enter your bio"
+                onChange={(e) =>
+                  setSignupData({ ...signupData, bio: e.target.value })
+                }
               />
             </div>
           </div>
@@ -57,6 +109,9 @@ export const AuthForm = () => {
             type="email"
             id="email"
             name="email"
+            onChange={(e) =>
+              setSignupData({ ...signupData, email: e.target.value })
+            }
             className="border-[#D9D9D9] outline-[#444CE7] placeholder:text-[#C4C4C4] placeholder-text-sm border-[0.5px] rounded-lg py-3 pl-3"
             placeholder="Enter your email"
           />
@@ -67,14 +122,44 @@ export const AuthForm = () => {
             type="password"
             id="password"
             name="password"
+            onChange={(e) =>
+              setSignupData({ ...signupData, password: e.target.value })
+            }
             className="border-[#D9D9D9] outline-[#444CE7] placeholder:text-[#C4C4C4] placeholder-text-sm border-[0.5px] rounded-lg py-3 pl-3"
             placeholder="Enter your password"
           />
         </div>
 
-        <button className="bg-[#444CE7] cursor-pointer text-center font-medium rounded-lg text-white py-4">
-          {activeTab === "login" ? "login" : "signup"}
-        </button>
+        {activeTab === "signup" ? (
+          <button
+            onClick={handleSignup}
+            disabled={
+              !signupData.email.trim() ||
+              !signupData.username.trim() ||
+              !signupData.password.trim()
+            }
+            className={` ${
+              !signupData.email.trim() ||
+              !signupData.password.trim() ||
+              !signupData.username.trim()
+                ? "bg-[#C4C4C4]"
+                : "bg-[#444CE7]"
+            } cursor-pointer text-center disabled:cursor-not-allowed font-medium rounded-lg text-white py-4`}
+          >
+            signup
+          </button>
+        ) : (
+          <button
+            disabled={!signupData.email.trim() || !signupData.password.trim()}
+            className={` ${
+              !signupData.email.trim() || !signupData.password.trim()
+                ? "bg-[#C4C4C4]"
+                : "bg-[#444CE7]"
+            } cursor-pointer disabled:cursor-not-allowed text-center font-medium rounded-lg text-white py-4`}
+          >
+            login
+          </button>
+        )}
       </form>
     </>
   );
