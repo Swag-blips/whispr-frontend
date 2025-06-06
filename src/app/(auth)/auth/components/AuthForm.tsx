@@ -4,11 +4,12 @@ import { useState } from "react";
 import { validateSignup } from "../utils/validate";
 import { register } from "@/app/actions/auth/auth";
 import toast from "react-hot-toast";
+import { Generating } from "@/app/components/icons/Generating";
 
 type ActiveTab = "signup" | "login";
 export const AuthForm = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>("signup");
-
+  const [loading, setLoading] = useState(false);
   const [signupData, setSignupData] = useState({
     username: "",
     bio: "",
@@ -30,6 +31,7 @@ export const AuthForm = () => {
     };
 
     if (validate) {
+      setLoading(true);
       try {
         const response = await register(payload);
 
@@ -45,6 +47,8 @@ export const AuthForm = () => {
         if (error instanceof Error) {
           toast.error(error.message);
         }
+      } finally {
+        setLoading(false);
       }
     } else {
       return;
@@ -146,7 +150,13 @@ export const AuthForm = () => {
                 : "bg-[#444CE7]"
             } cursor-pointer text-center disabled:cursor-not-allowed font-medium rounded-lg text-white py-4`}
           >
-            signup
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <Generating />
+              </div>
+            ) : (
+              "signup"
+            )}
           </button>
         ) : (
           <button

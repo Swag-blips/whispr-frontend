@@ -2,7 +2,7 @@
 
 import {
   LoginPayload,
-  LoginResponse,
+  LoginResponse,  
   RegisterPayload,
   RegisterResponse,
 } from "@/app/types/auth";
@@ -16,12 +16,12 @@ export const register = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
-    });
+      body: JSON.stringify(payload), 
+    }); 
 
     const data = (await response.json()) as RegisterResponse;
 
-    return data;
+    return data;  
   } catch (error) {
     console.error(error);
     throw error;
