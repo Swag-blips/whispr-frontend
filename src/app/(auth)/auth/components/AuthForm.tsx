@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import { validateSignup } from "../utils/validate";
-import { register } from "@/app/actions/auth/auth";
+
 import toast from "react-hot-toast";
 import { Generating } from "@/app/components/icons/Generating";
+import { register } from "../services/service";
+import { useRouter } from "next/navigation";
 
 type ActiveTab = "signup" | "login";
 export const AuthForm = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>("signup");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [signupData, setSignupData] = useState({
     username: "",
     bio: "",
@@ -140,7 +143,8 @@ export const AuthForm = () => {
             disabled={
               !signupData.email.trim() ||
               !signupData.username.trim() ||
-              !signupData.password.trim()
+              !signupData.password.trim() ||
+              loading
             }
             className={` ${
               !signupData.email.trim() ||
