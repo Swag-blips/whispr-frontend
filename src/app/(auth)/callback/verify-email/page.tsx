@@ -1,7 +1,7 @@
 import React, { use } from "react";
 import { verifyEmail } from "./services/services";
 import { redirect } from "next/navigation";
-
+import emailGif from "../../../../../public/emailGif.gif";
 const CallbackVerification = ({
   searchParams,
 }: {
@@ -15,8 +15,11 @@ const CallbackVerification = ({
 
   const verify = use(verifyEmail(token));
 
+  console.log(verify);
+
   return (
-    <main className="text-black flex items-center h-screen justify-center">
+    <main className="text-black flex items-center flex-col h-screen justify-center">
+      <img src={emailGif.src} alt="" />
       {verify?.success ? <p>{verify.message}</p> : <p>{verify?.message}</p>}
     </main>
   );
