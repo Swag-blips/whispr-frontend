@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Whispr",
@@ -15,9 +16,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-    
-      >
+      <body>
+        <Toaster />
         {children}
       </body>
     </html>

@@ -1,11 +1,21 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { verifyOtp } from "../services/service";
+import toast from "react-hot-toast";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Generating } from "@/app/components/icons/Generating";
 
-const OtpInputs = () => {
-  const [otp, setOtp] = useState(new Array(5).fill(""));
+type Props = {
+  email: string | string[] | undefined;
+};
+const OtpInputs = ({ email }: Props) => {
+  const [otp, setOtp] = useState(new Array(6).fill(""));
   const [enabled, setEnabled] = useState(false);
+  const [loading, setLoading] = useState(false);
   const otpBoxReference = useRef<HTMLInputElement[]>([]);
+
+  const router = useRouter();
 
   const handleChange = (value: string, index: number) => {
     const parsedValue = parseInt(value);
@@ -14,7 +24,7 @@ const OtpInputs = () => {
     newArr[index] = value;
     setOtp(newArr);
 
-    if (value && index < 5 - 1) {
+    if (value && index < 6 - 1) {
       otpBoxReference.current[index + 1].focus();
     }
   };
@@ -26,11 +36,31 @@ const OtpInputs = () => {
     if (e.key === "Backspace" && !e.currentTarget.value && index > 0) {
       otpBoxReference.current[index - 1].focus();
     }
-    if (e.key === "Enter" && e.currentTarget.value && index < 5 - 1) {
+    if (e.key === "Enter" && e.currentTarget.value && index < 6 - 1) {
       otpBoxReference.current[index + 1].focus();
     }
-    if (e.key === "ArrowRight" && e.currentTarget.value && index < 5 - 1) {
+    if (e.key === "ArrowRight" && e.currentTarget.value && index < 6 - 1) {
       otpBoxReference.current[index + 1].focus();
+    }
+  };
+
+  const handleSubmit = async (email: string, otp: string) => {
+    setLoading(true);
+    try {
+      const response = await verifyOtp(email, otp);
+
+      if (response.success) {
+        toast.success(response.message);
+        router.push("/");
+      } else if (!response.success && response.details) {
+        toast.error(response.details || "An error occured");
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,12 +96,22 @@ const OtpInputs = () => {
         ))}
       </div>
       <button
+        onClick={() => handleSubmit(email as string, otp.join(""))}
         disabled={!enabled}
         className={`mt-10 h-14 rounded-lg ${
           enabled ? "bg-[#444CE7] " : "bg-[#C4C4C4]"
-        } text-white font-medium disabled:cursor-not-allowed  w-full`}
+        } text-white font-medium  cursor-pointer
+         disabled:cursor-not-allowed  w-full`}
       >
-        Verify
+        {loading ? (
+          <>
+            <div className="flex items-center justify-center">
+              <Generating />
+            </div>
+          </>
+        ) : (
+          "verify"
+        )}
       </button>
       <span className="underline flex items-center justify-center mt-8 text-[#444CE7]">
         Resend otp

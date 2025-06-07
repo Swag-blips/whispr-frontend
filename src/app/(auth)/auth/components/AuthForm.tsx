@@ -70,7 +70,7 @@ export const AuthForm = () => {
       const response = await login(payload);
       if (response.success) {
         toast.success(response.message);
-        router.push("/verify-otp");
+        router.push("/verify-otp?email=" + authData.email);
       } else if (!response.success && response.details) {
         toast.error(response.details || "An error occured");
       } else {

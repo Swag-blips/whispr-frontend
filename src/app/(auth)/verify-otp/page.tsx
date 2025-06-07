@@ -2,11 +2,21 @@ import { ArrowLeft } from "lucide-react";
 import React from "react";
 import OtpInputs from "./components/OtpInputs";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-const OtpPage = () => {
+const OtpPage = ({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) => {
+  const email = searchParams?.email;
+
+  if (!email) {
+    redirect("/auth");
+  }
   return (
     <div className="">
-      <nav className="py-4 px-3">  
+      <nav className="py-4 px-3">
         <Link href={"/auth"}>
           <ArrowLeft />
         </Link>
@@ -16,12 +26,11 @@ const OtpPage = () => {
           Enter your otp code
         </h2>
         <p className="text-[#868686] text-center">
-          We sent an email to{" "}
-          <span className="text-[#444CE7]">coderblip@gmail.com</span> enter it
-          below to continue
+          We sent an otp to <span className="text-[#444CE7]">{email}</span>{" "}
+          enter it below to continue
         </p>
 
-        <OtpInputs />
+        <OtpInputs email={email} />
       </main>
     </div>
   );
