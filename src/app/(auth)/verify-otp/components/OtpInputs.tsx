@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { verifyOtp } from "../services/service";
+import { resendOtp, verifyOtp } from "../services/service";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Generating } from "@/app/components/icons/Generating";
@@ -64,6 +64,23 @@ const OtpInputs = ({ email }: Props) => {
     }
   };
 
+  const handleResendOtp = async (email: string) => {
+    try {
+      const response = await resendOtp(email);
+
+      if (response.success) {
+        toast.success(response.message);
+        router.push("/");
+      } else if (!response.success && response.details) {
+        toast.error(response.details || "An error occured");
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     if (otp.some((digit) => digit === "")) {
       setEnabled(false);
@@ -113,7 +130,10 @@ const OtpInputs = ({ email }: Props) => {
           "verify"
         )}
       </button>
-      <span className="underline flex items-center justify-center mt-8 text-[#444CE7]">
+      <span
+        onClick={() => handleResendOtp(email as string)}
+        className="underline cursor-pointer flex items-center justify-center mt-8 text-[#444CE7]"
+      >
         Resend otp
       </span>
     </div>

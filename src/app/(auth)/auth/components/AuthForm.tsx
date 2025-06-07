@@ -25,11 +25,11 @@ export const AuthForm = () => {
     const validate = validateSignup(authData);
 
     const payload = {
-      username: authData.username.trim().replace(/\s/g, ""),
+      username: authData.username.trim(),
       email: authData.email.trim().replace(/\s/g, ""),
       password: authData.password.trim().replace(/\s/g, ""),
       ...(authData.bio.trim() && {
-        bio: authData.bio.trim().replace(/\s/g, ""),
+        bio: authData.bio.trim(),
       }),
     };
 
