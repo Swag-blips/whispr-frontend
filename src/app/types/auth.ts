@@ -22,3 +22,8 @@ export interface LoginPayload {
 }
 
 export type LoginResponse = Omit<RegisterResponse, "user">;
+
+export interface VerifyEmailResponse {
+  success: boolean;
+  message: string;
+}

@@ -5,7 +5,7 @@ import { validateSignup } from "../utils/validate";
 
 import toast from "react-hot-toast";
 import { Generating } from "@/app/components/icons/Generating";
-import { register } from "../services/service";
+import { login, register } from "../services/service";
 import { useRouter } from "next/navigation";
 
 type ActiveTab = "signup" | "login";
@@ -13,7 +13,7 @@ export const AuthForm = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>("signup");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [signupData, setSignupData] = useState({
+  const [authData, setAuthData] = useState({
     username: "",
     bio: "",
     email: "",
@@ -22,14 +22,14 @@ export const AuthForm = () => {
 
   const handleSignup = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const validate = validateSignup(signupData);
+    const validate = validateSignup(authData);
 
     const payload = {
-      username: signupData.username.trim().replace(/\s/g, ""),
-      email: signupData.email.trim().replace(/\s/g, ""),
-      password: signupData.password.trim().replace(/\s/g, ""),
-      ...(signupData.bio.trim() && {
-        bio: signupData.bio.trim().replace(/\s/g, ""),
+      username: authData.username.trim().replace(/\s/g, ""),
+      email: authData.email.trim().replace(/\s/g, ""),
+      password: authData.password.trim().replace(/\s/g, ""),
+      ...(authData.bio.trim() && {
+        bio: authData.bio.trim().replace(/\s/g, ""),
       }),
     };
 
@@ -40,6 +40,7 @@ export const AuthForm = () => {
 
         if (response.success) {
           toast.success(response.message);
+          router.push("verify-email");
         } else if (!response.success && response.details) {
           toast.error(response.details || "An error occured");
         } else {
@@ -58,11 +59,42 @@ export const AuthForm = () => {
     }
   };
 
+  const handleLogin = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    const payload = {
+      email: authData.email.trim().replace(/\s/g, ""),
+      password: authData.password.trim().replace(/\s/g, ""),
+    };
+    try {
+      const response = await login(payload);
+      if (response.success) {
+        toast.success(response.message);
+        router.push("/verify-otp");
+      } else if (!response.success && response.details) {
+        toast.error(response.details || "An error occured");
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="bg-[#F0EFF2] w-[390px] px-1 mt-10 rounded-lg h-14 flex items-center justify-between">
         <button
-          onClick={() => setActiveTab("signup")}
+          onClick={() => {
+            if (!loading) {
+              setActiveTab("signup");
+            }
+          }}
           className={` ${
             activeTab === "signup" ? "bg-white" : "text-[#868686]"
           }  cursor-pointer w-[169px]  py-3  my-[0.5px] font-medium rounded-lg`}
@@ -70,7 +102,11 @@ export const AuthForm = () => {
           signup
         </button>
         <button
-          onClick={() => setActiveTab("login")}
+          onClick={() => {
+            if (!loading) {
+              setActiveTab("login");
+            }
+          }}
           className={` w-[169px] ${
             activeTab === "login" ? "bg-white" : "text-[#868686]"
           } cursor-pointer py-3  my-[0.5px] font-medium rounded-lg `}
@@ -88,7 +124,7 @@ export const AuthForm = () => {
                 id="username"
                 name="username"
                 onChange={(e) =>
-                  setSignupData({ ...signupData, username: e.target.value })
+                  setAuthData({ ...authData, username: e.target.value })
                 }
                 className="border-[#D9D9D9] outline-[#444CE7] placeholder:text-[#C4C4C4] placeholder-text-sm border-[0.5px] rounded-lg py-3 pl-3"
                 placeholder="Enter your username"
@@ -103,7 +139,7 @@ export const AuthForm = () => {
                 className="border-[#D9D9D9] outline-[#444CE7] placeholder-font-normal placeholder:text-[#C4C4C4] placeholder-text-sm border-[0.5px] rounded-lg py-3 pl-3"
                 placeholder="Enter your bio"
                 onChange={(e) =>
-                  setSignupData({ ...signupData, bio: e.target.value })
+                  setAuthData({ ...authData, bio: e.target.value })
                 }
               />
             </div>
@@ -117,7 +153,7 @@ export const AuthForm = () => {
             id="email"
             name="email"
             onChange={(e) =>
-              setSignupData({ ...signupData, email: e.target.value })
+              setAuthData({ ...authData, email: e.target.value })
             }
             className="border-[#D9D9D9] outline-[#444CE7] placeholder:text-[#C4C4C4] placeholder-text-sm border-[0.5px] rounded-lg py-3 pl-3"
             placeholder="Enter your email"
@@ -130,7 +166,7 @@ export const AuthForm = () => {
             id="password"
             name="password"
             onChange={(e) =>
-              setSignupData({ ...signupData, password: e.target.value })
+              setAuthData({ ...authData, password: e.target.value })
             }
             className="border-[#D9D9D9] outline-[#444CE7] placeholder:text-[#C4C4C4] placeholder-text-sm border-[0.5px] rounded-lg py-3 pl-3"
             placeholder="Enter your password"
@@ -141,15 +177,15 @@ export const AuthForm = () => {
           <button
             onClick={handleSignup}
             disabled={
-              !signupData.email.trim() ||
-              !signupData.username.trim() ||
-              !signupData.password.trim() ||
+              !authData.email.trim() ||
+              !authData.username.trim() ||
+              !authData.password.trim() ||
               loading
             }
             className={` ${
-              !signupData.email.trim() ||
-              !signupData.password.trim() ||
-              !signupData.username.trim()
+              !authData.email.trim() ||
+              !authData.password.trim() ||
+              !authData.username.trim()
                 ? "bg-[#C4C4C4]"
                 : "bg-[#444CE7]"
             } cursor-pointer text-center disabled:cursor-not-allowed font-medium rounded-lg text-white py-4`}
@@ -164,14 +200,21 @@ export const AuthForm = () => {
           </button>
         ) : (
           <button
-            disabled={!signupData.email.trim() || !signupData.password.trim()}
+            onClick={handleLogin}
+            disabled={!authData.email.trim() || !authData.password.trim()}
             className={` ${
-              !signupData.email.trim() || !signupData.password.trim()
+              !authData.email.trim() || !authData.password.trim()
                 ? "bg-[#C4C4C4]"
                 : "bg-[#444CE7]"
             } cursor-pointer disabled:cursor-not-allowed text-center font-medium rounded-lg text-white py-4`}
           >
-            login
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <Generating />
+              </div>
+            ) : (
+              "login"
+            )}
           </button>
         )}
       </form>
