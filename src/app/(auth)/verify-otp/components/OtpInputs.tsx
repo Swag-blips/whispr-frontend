@@ -4,10 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 const OtpInputs = () => {
   const [otp, setOtp] = useState(new Array(5).fill(""));
-  const [otpError, setOtpError] = useState<string | null>(null);
   const [enabled, setEnabled] = useState(false);
   const otpBoxReference = useRef<HTMLInputElement[]>([]);
-  const correctOtp = "12345";
 
   const handleChange = (value: string, index: number) => {
     const parsedValue = parseInt(value);
@@ -41,11 +39,6 @@ const OtpInputs = () => {
       setEnabled(false);
     } else {
       setEnabled(true);
-    }
-    if (otp.join("") !== "" && otp.join("") !== correctOtp) {
-      setOtpError("❌ Wrong OTP Please Check Again");
-    } else {
-      setOtpError(null);
     }
   }, [otp]);
 
