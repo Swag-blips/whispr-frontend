@@ -5,14 +5,14 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/auth",
-        destination: "http://localhost:3004/auth/",
+        destination: "http://localhost:3004/auth/auth",
       },
       {
         source: "/auth/:path*",
-        destination: "http://localhost:3004/auth/:path*",
+        destination: "http://localhost:3004/auth/auth/:path*",
       },
     ];
   },
 };
-
+ 
 export default nextConfig;
