@@ -7,7 +7,7 @@ const VerifyEmailPage = () => {
   return (
     <div>
       <nav className="py-4 px-3">
-        <Link href={"/auth"}>
+        <Link href={"/"}>
           <ArrowLeft />
         </Link>
       </nav>

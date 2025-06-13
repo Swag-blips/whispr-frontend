@@ -1,8 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import React from "react";
-import OtpInputs from "./components/OtpInputs";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import OtpInputs from "./components/OtpInputs";
 
 const OtpPage = ({
   searchParams,

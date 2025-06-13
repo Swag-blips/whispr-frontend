@@ -1,9 +1,11 @@
 import React, { use } from "react";
-import { verifyEmail } from "./services/services";
+
 import { redirect } from "next/navigation";
 import emailGif from "../../../../../public/emailGif.gif";
-import { decodeJwt } from "./utils/decodeToken";
+
 import Link from "next/link";
+import { decodeJwt } from "./utils/decodeToken";
+import { verifyEmail } from "./services/service";
 
 const CallbackVerification = ({
   searchParams,
@@ -39,7 +41,7 @@ const CallbackVerification = ({
         </>
       )}
       <Link
-        href={"/auth"}
+        href={"auth"}
         className="bg-[#444CE7]  text-center justify-center flex items-center cursor-pointer text-white font-medium  h-14  w-[262px] rounded-lg mt-4"
       >
         Login

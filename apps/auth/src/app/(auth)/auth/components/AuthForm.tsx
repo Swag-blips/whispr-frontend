@@ -41,7 +41,7 @@ export const AuthForm = () => {
 
         if (response.success) {
           toast.success(response.message);
-          router.push("verify-email");
+          router.push("/verify-email");
         } else if (!response.success && response.details) {
           toast.error(response.details || "An error occured");
         } else {
