@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Generating = () => {
+const Generating = () => {
   return (
     <svg
       className="animate-spin"
@@ -25,4 +25,4 @@ export const Generating = () => {
   );
 };
 
- 
+export default Generating;

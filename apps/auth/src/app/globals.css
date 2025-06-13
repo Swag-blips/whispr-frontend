@@ -20,15 +20,17 @@
   font-weight: 400;
   font-display: swap;
 }
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme {
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Satoshi", sans-serif;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,4 +43,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: Satoshi, sans-serif;
 }

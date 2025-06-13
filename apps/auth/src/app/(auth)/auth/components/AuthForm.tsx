@@ -4,9 +4,10 @@ import { useState } from "react";
 import { validateSignup } from "../utils/validate";
 
 import toast from "react-hot-toast";
-import { Generating } from "@/app/components/icons/Generating";
+
 import { login, register } from "../services/service";
 import { useRouter } from "next/navigation";
+import { Generating } from "@/app/components/icons";
 
 type ActiveTab = "signup" | "login";
 export const AuthForm = () => {

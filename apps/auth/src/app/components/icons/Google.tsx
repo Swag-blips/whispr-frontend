@@ -1,4 +1,3 @@
-
 type Props = {};
 
 const Google = (props: Props) => {
