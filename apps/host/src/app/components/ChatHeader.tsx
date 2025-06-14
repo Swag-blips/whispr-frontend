@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Ellipsis, Phone, Video } from "lucide-react";
 
-const ChatHeader = () => {
+export const ChatHeader = () => {
   return (
     <header className="flex items-center bg-white justify-between p-4">
       <div className="flex items-center justify-between">
@@ -28,5 +28,3 @@ const ChatHeader = () => {
     </header>
   );
 };
-
-export default ChatHeader;

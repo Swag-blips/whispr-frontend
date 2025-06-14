@@ -5,7 +5,7 @@ import { Check as DoubleCheck } from "./icons";
 
 const UserChats = () => {
   return (
-    <aside className="w-[469px] pl-4 pr-8  flex-col py-4 overflow-y-auto h-full flex  border-r border-[#F2F0F0]">
+    <aside className="max-w-[469px] pl-4 pr-8  flex-col py-4 overflow-y-auto h-full flex  border-r border-[#F2F0F0]">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-medium">Messages</h2>
 
