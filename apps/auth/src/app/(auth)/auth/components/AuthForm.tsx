@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { login, register } from "../services/service";
 import { useRouter } from "next/navigation";
 import { Generating } from "@/app/components/icons";
+import { getCookie } from "@/utils/cookie";
 
 type ActiveTab = "signup" | "login";
 export const AuthForm = () => {
