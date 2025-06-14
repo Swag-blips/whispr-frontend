@@ -1,9 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import Logo from "../../../public/Logo.svg";
-
-import { Bell, Search, Settings } from "lucide-react";
-import { Messages } from "./icons";
+import SidebarNav from "./SidebarNav";
 
 export const Sidebar = () => {
   return (
@@ -13,25 +11,7 @@ export const Sidebar = () => {
           <Image src={Logo} alt="logo" />
           <p className="text-2xl font-medium">Whispr</p>
         </div>
-
-        <nav className="flex flex-col gap-4">
-          <div className="flex curosr-pointer items-center gap-2 bg-[#444CE7] py-2 px-2 rounded-lg text-white">
-            <Messages />
-            Messages
-          </div>
-          <div className="flex cursor-pointer items-center py-2 px-2 gap-2">
-            <Bell strokeWidth={1} />
-            Notifications
-          </div>
-          <div className="flex cursor-pointer py-2 px-2 items-center gap-2">
-            <Settings strokeWidth={1} />
-            Settings
-          </div>
-          <div className="flex cursor-pointer py-2 px-2 items-center gap-2">
-            <Search strokeWidth={1} />
-            Search
-          </div>
-        </nav>
+        <SidebarNav />
       </div>
 
       <div className="flex items-center gap-2">
@@ -40,7 +20,7 @@ export const Sidebar = () => {
           alt="user-profile-img"
           width={48}
           height={48}
-          className="rounded-full"
+          className="rounded-full" 
         />
 
         <div className="flex flex-col gap-1">
