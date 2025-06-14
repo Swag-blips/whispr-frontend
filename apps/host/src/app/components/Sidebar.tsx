@@ -3,7 +3,7 @@ import React from "react";
 import Logo from "../../../public/Logo.svg";
 
 import { Bell, Search, Settings } from "lucide-react";
-import Messages from "./icons/Messages";
+import { Messages } from "./icons";
 
 export const Sidebar = () => {
   return (

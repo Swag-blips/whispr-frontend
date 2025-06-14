@@ -1,9 +1,9 @@
 import { Check, Pencil, Search } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import { Check as DoubleCheck } from "./icons/Check";
+import { Check as DoubleCheck } from "./icons";
 
-const Chats = () => {
+const UserChats = () => {
   return (
     <aside className="w-[469px] pl-4 pr-8  flex-col py-4 overflow-y-auto h-full flex  border-r border-[#F2F0F0]">
       <div className="flex items-center justify-between">
@@ -145,4 +145,4 @@ const Chats = () => {
   );
 };
 
-export default Chats;
+export default UserChats;

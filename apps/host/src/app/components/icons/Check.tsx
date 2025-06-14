@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
-
-
-export const Check = () => {
+const Check = () => {
   return (
     <svg
       width="24"
@@ -17,4 +15,6 @@ export const Check = () => {
       />
     </svg>
   );
-}
+};
+
+export default Check;
