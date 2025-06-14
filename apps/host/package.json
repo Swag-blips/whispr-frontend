@@ -12,7 +12,7 @@
   "dependencies": {
     "@repo/ui": "workspace:*",
     "axios": "^1.10.0",
-    "jsonwebtoken": "^9.0.2",
+    "jose": "^6.0.11",
     "lucide-react": "^0.515.0",
     "next": "15.3.3",
     "react": "^19.0.0",

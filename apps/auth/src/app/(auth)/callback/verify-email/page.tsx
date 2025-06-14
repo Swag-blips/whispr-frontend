@@ -41,7 +41,7 @@ const CallbackVerification = ({
         </>
       )}
       <Link
-        href={"auth"}
+        href={"/auth"}
         className="bg-[#444CE7]  text-center justify-center flex items-center cursor-pointer text-white font-medium  h-14  w-[262px] rounded-lg mt-4"
       >
         Login

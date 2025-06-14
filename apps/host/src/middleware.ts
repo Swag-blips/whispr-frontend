@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const accessToken = req.cookies.get("accessToken")?.value;
   const url = req.nextUrl.clone();
   url.pathname = "/auth";
@@ -11,12 +11,14 @@ export function middleware(req: NextRequest) {
   }
 
   try {
-    jwt.verify(
+    const tokenVerified = await jwtVerify(
       accessToken as string,
-      process.env.ACCESS_TOKEN_SECRET as string
+      new TextEncoder().encode(process.env.JWT_SECRET_KEY)
     );
+    console.log(tokenVerified);
     return NextResponse.next();
   } catch (error) {
+    console.error(error);
     return NextResponse.redirect(url);
   }
 }
