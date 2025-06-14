@@ -1,14 +1,13 @@
 import React from "react";
 import Logo from "../../../public/Logo.svg";
 import { X } from "lucide-react";
-import { Search as SearchIcon } from "lucide-react";
 import { NavState } from "./SidebarNav";
 import Image from "next/image";
 type Props = {
   setOpen: (state: NavState) => void;
-};
+}; 
 
-export const Notifications = ({ setOpen }: Props) => {
+ export const Notifications = ({ setOpen }: Props) => {
   return (
     <div className="fixed inset-0 bg-black/20 py-4 backdrop-blur-[10px] pr-8  top-0 z-50">
       <div className="bg-white h-full w-[345px] ml-auto rounded-lg">

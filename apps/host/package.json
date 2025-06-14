@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
+    "axios": "^1.10.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.515.0",
     "next": "15.3.3",
     "react": "^19.0.0",
@@ -21,6 +23,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
