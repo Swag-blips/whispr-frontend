@@ -8,6 +8,7 @@ export const axiosInstance = axios.create({
     "Content-Type": "application/json",
     Authorization: `Bearer ${accessToken}`,
   },
+  withCredentials: true,
 });
 interface QueueItem {
   resolve: (value?: string | PromiseLike<string> | undefined | null) => void;
@@ -58,12 +59,10 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axiosInstance.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`
+        );   
+
         const accessToken = getCookie("accessToken");
         processQueue(null, accessToken!);
 

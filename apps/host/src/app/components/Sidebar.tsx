@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Logo from "../../../public/Logo.svg";
 import SidebarNav from "./SidebarNav";
+import UserProfile from "./UserProfile";
 
 export const Sidebar = () => {
   return (
@@ -14,20 +15,7 @@ export const Sidebar = () => {
         <SidebarNav />
       </div>
 
-      <div className="flex items-center gap-2">
-        <Image
-          src="https://randomuser.me/api/portraits/med/men/75.jpg"
-          alt="user-profile-img"
-          width={48}
-          height={48}
-          className="rounded-full" 
-        />
-
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Swag</span>
-          <span className="text-xs text-[#D9D9D9]">Logout</span>
-        </div>
-      </div>
+      <UserProfile />
     </aside>
   );
 };

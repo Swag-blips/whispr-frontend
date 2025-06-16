@@ -1,13 +1,45 @@
+"use client";
 import Image from "next/image";
 import Logo from "../../../public/Logo.svg";
 import { X } from "lucide-react";
 import { Search as SearchIcon } from "lucide-react";
 import { NavState } from "./SidebarNav";
+import { useState } from "react";
+import { User } from "../types/types";
+import { axiosInstance } from "../api/api";
+import { AxiosInstance, AxiosResponse } from "axios";
 
 type Props = {
   setOpen: (state: NavState) => void;
 };
 export const Search = ({ setOpen }: Props) => {
+  const [username, setUsername] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const searchUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    if (!username.trim()) {
+      return;
+    }
+
+    try {
+      const response = (await axiosInstance.get(
+        `/user/${username}`
+      )) as AxiosResponse<{ success: boolean; users: User[] }>;
+
+      console.log(response);
+      if (response.data.success) {
+        setUsers(response.data.users);
+      }
+      return response;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-black/20 py-4 backdrop-blur-[10px] pr-8  top-0 z-50">
       <div className="bg-white h-full w-[345px] ml-auto rounded-lg">
@@ -26,15 +58,25 @@ export const Search = ({ setOpen }: Props) => {
           />
         </div>
 
-        <div className="bg-[#F6F6F6] flex items-center gap-2 mx-4 py-3 pl-3 rounded-lg">
+        <form
+          onSubmit={(e) => {
+            if (!loading) {
+              searchUser(e);
+            }
+          }}
+          className="bg-[#F6F6F6] flex items-center gap-2 mx-4 py-3 pl-3 rounded-lg"
+        >
           <SearchIcon color="#C4C4C4" className="cursor-pointer" />
 
           <input
             type="text"
+            name="search"
+            id="search"
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="search"
             className="placeholder:text-[#C4C4C4] text-black w-full outline-none"
           />
-        </div>
+        </form>
       </div>
     </div>
   );
