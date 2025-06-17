@@ -1,12 +1,12 @@
-import axios, { AxiosError } from "axios";
-import { getCookie } from "../utils/getCookie";
+"use client";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { getCookie } from "../action/cookie";
 
-const accessToken = getCookie("accessToken");
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${accessToken}`,
   },
   withCredentials: true,
 });
@@ -48,7 +48,6 @@ axiosInstance.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            originalRequest.headers["Authorization"] = "Bearer " + token;
             return axiosInstance(originalRequest);
           })
           .catch((err) => {
@@ -61,9 +60,9 @@ axiosInstance.interceptors.response.use(
       try {
         const response = await axiosInstance.post(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`
-        );   
+        );
 
-        const accessToken = getCookie("accessToken");
+        const accessToken = await getCookie("accessToken");
         processQueue(null, accessToken!);
 
         return axiosInstance(originalRequest);

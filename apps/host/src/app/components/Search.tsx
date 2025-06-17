@@ -6,8 +6,9 @@ import { Search as SearchIcon } from "lucide-react";
 import { NavState } from "./SidebarNav";
 import { useState } from "react";
 import { User } from "../types/types";
-import { axiosInstance } from "../api/api";
+import { axiosInstance } from "../axios/api";
 import { AxiosInstance, AxiosResponse } from "axios";
+import Users from "./Users";
 
 type Props = {
   setOpen: (state: NavState) => void;
@@ -27,11 +28,11 @@ export const Search = ({ setOpen }: Props) => {
     try {
       const response = (await axiosInstance.get(
         `/user/${username}`
-      )) as AxiosResponse<{ success: boolean; users: User[] }>;
+      )) as AxiosResponse<{ success: boolean; results: User[] }>;
 
       console.log(response);
       if (response.data.success) {
-        setUsers(response.data.users);
+        setUsers(response.data.results);
       }
       return response;
     } catch (error) {
@@ -40,6 +41,8 @@ export const Search = ({ setOpen }: Props) => {
       setLoading(false);
     }
   };
+
+  console.log("users", users);
   return (
     <div className="fixed inset-0 bg-black/20 py-4 backdrop-blur-[10px] pr-8  top-0 z-50">
       <div className="bg-white h-full w-[345px] ml-auto rounded-lg">
@@ -77,6 +80,9 @@ export const Search = ({ setOpen }: Props) => {
             className="placeholder:text-[#C4C4C4] text-black w-full outline-none"
           />
         </form>
+
+        {users.length > 0 &&
+          users.map((user) => <Users key={user._id} user={user} />)}
       </div>
     </div>
   );

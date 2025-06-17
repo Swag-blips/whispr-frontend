@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
-import { axiosInstance } from "../api/api";
+import { axiosInstance } from "../axios/api";
 import { AxiosResponse } from "axios";
 import { User } from "../types/types";
 
@@ -18,6 +18,7 @@ const AuthContext = createContext<AuthContextType>({
 export const useAuth = () => {
   return useContext(AuthContext);
 };
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
