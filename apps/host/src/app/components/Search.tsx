@@ -6,7 +6,7 @@ import { Search as SearchIcon } from "lucide-react";
 import { NavState } from "./SidebarNav";
 import { useState } from "react";
 import { User } from "../types/types";
-import { axiosInstance } from "../axios/api";
+import { axiosInstance } from "../api/api";
 import { AxiosInstance, AxiosResponse } from "axios";
 import Users from "./Users";
 

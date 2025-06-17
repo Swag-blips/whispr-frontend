@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
+
 import { getCookie } from "../action/cookie";
 
 export const axiosInstance = axios.create({
