@@ -9,6 +9,7 @@ import { User } from "../types/types";
 import { axiosInstance } from "../api/api";
 import { AxiosInstance, AxiosResponse } from "axios";
 import Users from "./Users";
+import { Generating } from "@repo/ui/icons/Generating";
 
 type Props = {
   setOpen: (state: NavState) => void;
@@ -81,8 +82,17 @@ export const Search = ({ setOpen }: Props) => {
           />
         </form>
 
-        {users.length > 0 &&
-          users.map((user) => <Users key={user._id} user={user} />)}
+        {loading ? (
+          <div className="flex flex-col items-center mt-4 gap-3">
+            <Generating />
+            <p>Fetching users</p>
+          </div>
+        ) : (
+          <>
+            {users.length > 0 &&
+              users.map((user) => <Users key={user._id} user={user} />)}
+          </>
+        )}
       </div>
     </div>
   );

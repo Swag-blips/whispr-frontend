@@ -7,3 +7,13 @@ export interface User {
   _id: string;
   username: string;
 }
+
+export interface Notification {
+  _id: string;
+  from: User;
+  to: string;
+  type: "Accepted" | "Declined" | "Pending";
+  createdAt: Date;
+  updatedAt: string;
+  __v: number;
+}

@@ -36,9 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(e);
     }
   };
-
-  console.log(user);
-
+ 
   useEffect(() => {
     fetchUser();
   }, []);

@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 import { login, register } from "../services/service";
 import { useRouter } from "next/navigation";
-import { Generating } from "@/app/components/icons";
+import { Generating } from "@repo/ui/icons/Generating";
 
 type ActiveTab = "signup" | "login";
 export const AuthForm = () => {
@@ -23,7 +23,7 @@ export const AuthForm = () => {
 
   const handleSignup = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const validate = validateSignup(authData);
+    const validate = validateSignup(authData); 
 
     const payload = {
       username: authData.username.trim(),
@@ -202,7 +202,9 @@ export const AuthForm = () => {
         ) : (
           <button
             onClick={handleLogin}
-            disabled={!authData.email.trim() || !authData.password.trim()}
+            disabled={
+              !authData.email.trim() || !authData.password.trim() || loading
+            }
             className={` ${
               !authData.email.trim() || !authData.password.trim()
                 ? "bg-[#C4C4C4]"

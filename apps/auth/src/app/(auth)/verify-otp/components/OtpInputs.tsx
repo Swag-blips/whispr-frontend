@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { resendOtp, verifyOtp } from "../services/service";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Generating } from "@/app/components/icons";
+import { Generating } from "@repo/ui/icons/Generating";
+
 
 type Props = {
   email: string | string[] | undefined;

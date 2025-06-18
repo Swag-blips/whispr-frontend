@@ -58,15 +58,24 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axiosInstance.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
+          {},
+          {
+            withCredentials: true,
+          }
         );
 
+
+        if (response.status === 401) {
+          throw new Error("Unauthorized");
+        }
         const accessToken = await getCookie("accessToken");
         processQueue(null, accessToken!);
 
         return axiosInstance(originalRequest);
       } catch (error) {
+        console.error("ERROR", error);
         processQueue(error, null);
         window.location.href = "/auth";
         return Promise.reject(error);
