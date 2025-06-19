@@ -1,7 +1,5 @@
-import { Check, Pencil, Search } from "lucide-react";
-import Image from "next/image";
-import React from "react";
-import { Check as DoubleCheck } from "./icons";
+import { Pencil, Search } from "lucide-react";
+import Chats from "./Chats";
 
 const UserChats = () => {
   return (
@@ -24,69 +22,9 @@ const UserChats = () => {
       </div>
 
       <div className="flex flex-col mt-8  gap-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 ">
-            <Image
-              width={48}
-              height={48}
-              src="https://randomuser.me/api/portraits/med/men/75.jpg"
-              alt="user"
-              className="rounded-full"
-            />
-            <div className="flex flex-col gap-1">
-              <h1 className="font-medium">Gerard muller</h1>
-              <p className="text-[#8C8C8C] text-sm font-normal">Send me cash</p>
-            </div>
-          </div>
-          <div className="flex items-center flex-col gap-1">
-            <p>12:23</p>
-            <DoubleCheck />
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 ">
-            <Image
-              width={48}
-              height={48}
-              src="https://randomuser.me/api/portraits/med/men/70.jpg"
-              alt="user"
-              className="rounded-full"
-            />
-            <div className="flex flex-col gap-1">
-              <h1 className="font-medium">Damien wayne</h1>
-              <p className="text-[#8C8C8C] text-sm font-normal">
-                Free my nigga harambe
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center flex-col gap-1">
-            <p>08:23</p>
-            <Check color="#4CAF50" />
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 ">
-            <Image
-              width={48}
-              height={48}
-              src="https://randomuser.me/api/portraits/med/men/63.jpg"
-              alt="user"
-              className="rounded-full"
-            />
-            <div className="flex flex-col gap-1">
-              <h1 className="font-medium">Jared baroe</h1>
-              <p className="text-[#8C8C8C] text-sm font-normal">
-                @me at my spotify
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center flex-col gap-1">
-            <p>16:23</p>
-            <DoubleCheck />
-          </div>
-        </div>
+        <Chats />
       </div>
-
+      {/* 
       <div className="mt-8">
         <h2 className="text-2xl font-medium">Groups</h2>
         <div className="flex items-start mt-8 justify-between">
@@ -140,7 +78,7 @@ const UserChats = () => {
             <p>16:23</p>
           </div>
         </div>
-      </div>
+      </div> */}
     </aside>
   );
 };

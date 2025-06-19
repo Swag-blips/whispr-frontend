@@ -1,4 +1,3 @@
-"use client";
 import axios from "axios";
 
 import { getCookie } from "../action/cookie";
@@ -34,7 +33,7 @@ const processQueue = (
 };
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => response, 
   async (error) => {
     const originalRequest = error.config;
 
@@ -65,7 +64,6 @@ axiosInstance.interceptors.response.use(
             withCredentials: true,
           }
         );
-
 
         if (response.status === 401) {
           throw new Error("Unauthorized");

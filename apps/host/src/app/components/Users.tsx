@@ -27,7 +27,7 @@ const Users = ({ user }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }; 
 
   return (
     <div className="flex items-start mx-4 mt-4 gap-2">

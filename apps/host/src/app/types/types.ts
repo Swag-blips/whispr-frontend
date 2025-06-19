@@ -17,3 +17,15 @@ export interface Notification {
   updatedAt: string;
   __v: number;
 }
+
+export interface Chats {
+  _id: string;
+  bio: string;
+  createdAt: string;
+  lastMessage: string;
+  participants: string[];
+  type: "private" | "group";
+  updatedAt: string;
+  __v: number;
+  otherUser: User;
+}
