@@ -14,6 +14,8 @@ const Chats = () => {
     error,
   } = useSWR("userChats", getUserChats);
 
+  const { setCurrentChat } = useChatStore();
+
   if (isLoading) return <div>Loading....</div>;
   if (error) return <div>{error}</div>;
 
@@ -22,6 +24,7 @@ const Chats = () => {
       {userChats && userChats?.chats.length > 0 ? (
         userChats?.chats.map((chat: ChatsType) => (
           <div
+            onClick={() => setCurrentChat(chat)}
             key={chat._id}
             className="flex cursor-pointer items-center justify-between"
           >

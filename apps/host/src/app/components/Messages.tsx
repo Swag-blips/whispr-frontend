@@ -1,20 +1,38 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import { messages } from "../utils/constants";
 import { MessageInput } from "./MessageInput";
+import useSWR from "swr";
+import { getMessages } from "../services/chats";
+import { useChatStore } from "../store/chats.store";
+import { useAuth } from "../context/AuthContext";
+import { getAvatar } from "../utils/getUserAvatar";
+import { convertTime } from "../utils/convertDate";
 
 export const Messages = () => {
+  const { currentChat } = useChatStore();
+  const { user } = useAuth();
+  const { data } = useSWR(currentChat?._id, getMessages);
+
+  console.log("messages here", data);
+  console.log("Users data", user);
+  console.log(data?.messages[0].senderId === user?._id);
   return (
-    <div className="flex flex-col justify-between px-4 mt-8 ">
-      <div className="flex-1">
-        {messages.map((msg) => (
+    <div className="flex flex-col h-full overflow-y-auto px-4 py-8">
+      <div className="flex-col pb-[90px] flex gap-6">
+        {data?.messages.map((msg) => (
           <div
-            key={msg.id}
-            className={`flex  ${msg.sender === "You" ? "ml-auto flex-row-reverse" : ""} items-start gap-2`}
+            key={msg._id}
+            className={`flex  ${msg.senderId === user?._id ? "ml-auto flex-row-reverse" : ""} items-start gap-2`}
           >
             <Image
-              src={msg.avatar}
-              alt={msg.sender}
+              src={
+                msg.senderId === user?._id
+                  ? getAvatar(user.avatar)
+                  : getAvatar(msg.otherUserDetails.avatar)
+              }
+              alt={"user"}
               width={48}
               height={48}
               className="rounded-full"
@@ -22,15 +40,21 @@ export const Messages = () => {
 
             <div className="flex flex-col gap-2">
               <div
-                className={`flex ${msg.sender === "You" ? "flex-row-reverse" : ""} items-center gap-4`}
+                className={`flex ${msg.senderId === user?._id ? "flex-row-reverse" : ""} items-center gap-4`}
               >
-                <h2 className="font-medium">{msg.sender}</h2>
-                <p className="text-[#8C8C8C]">{msg.timestamp}</p>
-              </div>
+                <h2 className="font-medium">
+                  {msg.senderId === user?._id
+                    ? user.username
+                    : msg?.otherUserDetails.username}
+                </h2>
+                <p className="text-[#8C8C8C] text-sm"> 
+                  {convertTime(msg.createdAt)}
+                </p>
+              </div> 
               <p
-                className={` ${msg.sender === "You" ? "bg-[#444CE7] text-white" : "bg-white text-black"} rounded-tr-lg rounded-br-lg rounded-bl-lg  p-4 `}
+                className={` ${msg.senderId === user?._id ? "bg-[#444CE7] text-white ml-auto" : "bg-white text-black"} w-fit rounded-tr-lg rounded-br-lg rounded-bl-lg  p-4 `}
               >
-                {msg.text}
+                {msg.content}
               </p>
             </div>
           </div>

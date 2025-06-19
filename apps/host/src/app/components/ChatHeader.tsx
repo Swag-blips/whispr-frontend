@@ -1,7 +1,13 @@
 import Image from "next/image";
 import { Ellipsis, Phone, Video } from "lucide-react";
+import { Chats } from "../types/types";
+import { getAvatar } from "../utils/getUserAvatar";
 
-export const ChatHeader = () => {
+type Props = {
+  currentChat: Chats;
+};
+
+export const ChatHeader = ({ currentChat }: Props) => {
   return (
     <header className="flex items-center bg-white justify-between p-4">
       <div className="flex items-center justify-between">
@@ -9,13 +15,15 @@ export const ChatHeader = () => {
           <Image
             width={48}
             height={48}
-            src="https://randomuser.me/api/portraits/med/men/75.jpg"
+            src={getAvatar(currentChat.otherUser.avatar)}
             alt="user"
             className="rounded-full"
           />
           <div className="flex flex-col gap-1">
-            <h1 className="font-medium">Gerard muller</h1>
-            <p className="text-[#8C8C8C] text-sm font-normal">Send me cash</p>
+            <h1 className="font-medium">{currentChat.otherUser.username}</h1>
+            <p className="text-[#8C8C8C] text-sm font-normal">
+              {currentChat.otherUser.bio}
+            </p>
           </div>
         </div>
       </div>

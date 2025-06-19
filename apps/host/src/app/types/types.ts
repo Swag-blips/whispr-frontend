@@ -29,3 +29,15 @@ export interface Chats {
   __v: number;
   otherUser: User;
 }
+
+export interface Message {
+  _id: string;
+  chatId: string;
+  content: string;
+  receiverId: string;
+  senderId: string;
+  createdAt: Date;
+  updatedAt: string;
+  __v: number;
+  otherUserDetails: User;
+}
