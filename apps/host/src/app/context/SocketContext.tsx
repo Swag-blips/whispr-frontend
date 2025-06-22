@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "./AuthContext";
 
@@ -9,7 +9,14 @@ interface SocketContext {
   onlineUsers: Array<string>;
 }
 
-export const SocketContext = createContext<SocketContext | null>(null);
+export const SocketContext = createContext<SocketContext>({
+  socket: null,
+  onlineUsers: [],
+});
+
+export const useSocket = () => {
+  return useContext(SocketContext);
+};
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -38,6 +45,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         setSocket(null);
       }
     }
+
+    return () => {
+      socket?.off();
+    };
   }, [user]);
   return (
     <SocketContext.Provider value={{ onlineUsers, socket }}>
