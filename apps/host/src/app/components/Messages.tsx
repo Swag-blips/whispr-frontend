@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { getMessages } from "../services/chats";
 import { useChatStore } from "../store/chats.store";
@@ -14,16 +14,25 @@ export const Messages = () => {
   const { currentChat } = useChatStore();
   const { socket } = useSocket();
   const { user } = useAuth();
+  const lastMessageRef = useRef<HTMLDivElement | null>(null);
 
   const [allMessages, setAllMessages] = useState<Message[]>([]);
 
   const { data, isLoading, error } = useSWR(currentChat?._id, getMessages);
 
+  const scrollToBottom = () => {
+    console.log("CALLED");
+    return lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
   useEffect(() => {
     if (data?.messages) {
       setAllMessages(data.messages);
     }
-  }, [data?.messages]);
+  }, [data?.messages, isLoading]);
+
+  useEffect(() => {
+    scrollToBottom(); 
+  }, [allMessages]);
 
   useEffect(() => {
     if (!socket || !currentChat?._id) return;
@@ -97,6 +106,7 @@ export const Messages = () => {
         ) : (
           <div>Start your Conversation</div>
         )}
+        <div ref={lastMessageRef} />
       </div>
     </div>
   );

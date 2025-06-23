@@ -12,15 +12,16 @@ export const Chat = () => {
   const { socket } = useSocket();
 
   useEffect(() => {
+    console.log("CURRENT CHAT", currentChat);
     socket?.emit("joinRoom", currentChat?._id);
 
     return () => {
       socket?.emit("leaveRoom", currentChat?._id);
-    };
+    };  
   }, [currentChat]);
 
-  if (!currentChat) return null; 
-
+  if (!currentChat) return null;
+  
   return (
     <div className="flex-1 relative bg-[#F6F8FC] h-full flex flex-col">
       <ChatHeader currentChat={currentChat} />
