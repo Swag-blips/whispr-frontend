@@ -40,4 +40,5 @@ export interface Message {
   updatedAt: string;
   __v: number;
   otherUserDetails: User;
+  status: "delivered" | "sent" | "seen";
 }

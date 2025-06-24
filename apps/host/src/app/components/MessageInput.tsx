@@ -29,17 +29,19 @@ export const MessageInput = () => {
       socket?.emit("stopTyping", { chatId: currentChat?._id });
     }, 500)
   );
-
   useEffect(() => {
     socket?.on("userTyping", (data) => {
       setUserIsTyping(data);
     });
-  }, [currentChat, socket]);
 
-  useEffect(() => {
     socket?.on("stopTyping", () => {
       setUserIsTyping("");
     });
+
+    return () => {
+      socket?.off("userTyping");
+      socket?.off("stopTyping");
+    };
   }, [currentChat, socket]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

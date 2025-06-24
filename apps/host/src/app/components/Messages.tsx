@@ -9,6 +9,7 @@ import { getAvatar } from "../utils/getUserAvatar";
 import { convertTime } from "../utils/convertDate";
 import { useSocket } from "../context/SocketContext";
 import { Message } from "../types/types";
+import { Check, CheckCheck } from "lucide-react";
 
 export const Messages = () => {
   const { currentChat } = useChatStore();
@@ -21,8 +22,28 @@ export const Messages = () => {
   const { data, isLoading, error } = useSWR(currentChat?._id, getMessages);
 
   const scrollToBottom = () => {
-    console.log("CALLED");
     return lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleMessageDelivered = (data: {
+    chatId: string;
+    messageIds: string[];
+  }) => {
+    if (data.chatId !== currentChat?._id) {
+      return;
+    }
+    setAllMessages((prevMessages) =>
+      prevMessages.map((msg) => {
+        if (data.messageIds.includes(msg._id)) {
+          return {
+            ...msg,
+            status: "delivered",
+          };
+        }
+
+        return msg;
+      })
+    );
   };
   useEffect(() => {
     if (data?.messages) {
@@ -31,7 +52,7 @@ export const Messages = () => {
   }, [data?.messages, isLoading]);
 
   useEffect(() => {
-    scrollToBottom(); 
+    scrollToBottom();
   }, [allMessages]);
 
   useEffect(() => {
@@ -50,8 +71,23 @@ export const Messages = () => {
     };
   }, [socket, currentChat?._id]);
 
+  useEffect(() => {
+    socket?.on(
+      "messagesDelivered",
+      (data: { chatId: string; messageIds: string[] }) => {
+        handleMessageDelivered(data);
+      }
+    );
+
+    return () => {
+      socket?.off("messagesDelivered", handleMessageDelivered);
+    };
+  }, []);
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.message || "Something went wrong"}</p>;
+
+  console.log("all messages", allMessages);
 
   return (
     <div className="flex flex-col h-full overflow-y-auto px-4 py-8">
@@ -96,8 +132,17 @@ export const Messages = () => {
                     msg.senderId === user?._id
                       ? "bg-[#444CE7] text-white ml-auto"
                       : "bg-white text-black"
-                  } w-fit rounded-tr-lg rounded-br-lg rounded-bl-lg p-4`}
+                  } w-fit rounded-tr-lg rounded-br-lg flex items-center gap-1 rounded-bl-lg p-4`}
                 >
+                  {msg.senderId === user?._id &&
+                    (msg.status === "sent" ? (
+                      <Check />
+                    ) : msg.status === "delivered" ? (
+                      <CheckCheck />
+                    ) : (
+                      ""
+                    ))}
+
                   {msg.content}
                 </p>
               </div>

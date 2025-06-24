@@ -27,14 +27,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     if (user) {
       const socket = io("http://localhost:3005", {
         query: {
-          userId: user._id,
+          userId: user._id,   
         },
-      });
+      });    
 
       setSocket(socket);
-      socket.on("getOnlineUsers", (users) => {
+      socket.on("getOnlineUsers", (users) => { 
         setOnlineUsers(users);
-      });
+      });  
 
       return () => {
         socket.close();
@@ -43,12 +43,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       if (socket) {
         socket.close();
         setSocket(null);
-      }
+      } 
     }
-
-    return () => {
-      socket?.off();
-    };
   }, [user]);
   return (
     <SocketContext.Provider value={{ onlineUsers, socket }}>

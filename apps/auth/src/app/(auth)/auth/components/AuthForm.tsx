@@ -31,7 +31,7 @@ export const AuthForm = () => {
       password: authData.password.trim().replace(/\s/g, ""),
       ...(authData.bio.trim() && {
         bio: authData.bio.trim(),
-      }),
+      }), 
     };
 
     if (validate) {
