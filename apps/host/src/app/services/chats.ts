@@ -11,6 +11,8 @@ export const getUserChats = async () => {
       chats: Chats[];
     }>;
 
+    console.log("RESPONSE", response)
+
     return response.data;
   } catch (error) {
     console.error(error);

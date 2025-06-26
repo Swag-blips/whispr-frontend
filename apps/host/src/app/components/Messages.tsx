@@ -45,6 +45,28 @@ export const Messages = () => {
       })
     );
   };
+
+  const handleMarkMessagesAsSeen = (data: {
+    receiverId: string;
+    chatId: string;
+  }) => {
+    if (data.chatId !== currentChat?._id) {
+      return;
+    }
+    setAllMessages((prevMessages) =>
+      prevMessages.map((msg) => {
+        if (msg.status !== "seen") {
+          return {
+            ...msg,
+            status: "seen",
+          }; 
+        }
+
+        return msg;
+      })
+    );
+  };
+
   useEffect(() => {
     if (data?.messages) {
       setAllMessages(data.messages);
@@ -79,8 +101,16 @@ export const Messages = () => {
       }
     );
 
+    socket?.on(
+      "messagesSeen",
+      (data: { receiverId: string; chatId: string }) => {
+        handleMarkMessagesAsSeen(data);
+      }
+    );
+
     return () => {
       socket?.off("messagesDelivered", handleMessageDelivered);
+      socket?.off("messagesSeen", handleMarkMessagesAsSeen);
     };
   }, []);
 

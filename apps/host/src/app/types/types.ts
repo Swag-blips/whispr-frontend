@@ -28,6 +28,7 @@ export interface Chats {
   updatedAt: string;
   __v: number;
   otherUser: User;
+  unreadMessages: number;
 }
 
 export interface Message {
