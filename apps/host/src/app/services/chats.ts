@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { axiosInstance } from "../api/api";
-import { Chats, Message } from "../types/types";
+import { Chats, CreateGroupArgs, Message } from "../types/types";
 
 export const getUserChats = async () => {
   try {
@@ -10,8 +10,6 @@ export const getUserChats = async () => {
       success: boolean;
       chats: Chats[];
     }>;
-
-    console.log("RESPONSE", response)
 
     return response.data;
   } catch (error) {
@@ -42,6 +40,21 @@ export const getMessages = async (chatId: string) => {
     return response.data;
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+};
+
+export const createGroupChat = async (
+  url: string,
+  { arg }: { arg: CreateGroupArgs }
+) => {
+  try {
+    const response = await axiosInstance.post(url, arg);
+
+    
+    return response.data;
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };

@@ -1,5 +1,6 @@
 import { Pencil, Search } from "lucide-react";
 import Chats from "./Chats";
+import { CreateGroup } from "./CreateGroup";
 
 const UserChats = () => {
   return (
@@ -7,9 +8,7 @@ const UserChats = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-medium">Messages</h2>
 
-        <div className="size-10 flex items-center justify-center bg-[#F5F5F5] rounded-full">
-          <Pencil color="#C4C4C4" size={16} />
-        </div>
+        <CreateGroup />
       </div>
 
       <div className="bg-[#F6F6F6] flex items-center gap-2 rounded-2xl py-3 pl-3 mt-6 w-full">

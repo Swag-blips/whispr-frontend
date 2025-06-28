@@ -25,10 +25,23 @@ export interface Chats {
   lastMessage: string;
   participants: string[];
   type: "private" | "group";
-  updatedAt: string;
+  updatedAt: number;
   __v: number;
-  otherUser: User;
+  groupName: string;
+  otherUsers: User;
   unreadMessages: number;
+}
+
+export interface createGroup {
+  groupName: string;
+  bio: string;
+  participants: Array<string>;
+}
+
+export interface CreateGroupArgs {
+  groupName: string;
+  bio: string;
+  participants: Array<string>;
 }
 
 export interface Message {

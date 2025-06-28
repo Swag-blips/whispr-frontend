@@ -12,17 +12,30 @@ export const ChatHeader = ({ currentChat }: Props) => {
     <header className="flex items-center bg-white justify-between p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 ">
-          <Image
-            width={48}
-            height={48}
-            src={getAvatar(currentChat.otherUser.avatar)}
-            alt="user"
-            className="rounded-full"
-          />
+          {currentChat.type === "private" ? (
+            <Image
+              width={48}
+              height={48}
+              src={getAvatar(currentChat.otherUsers.avatar)}
+              alt="user"
+              className="rounded-full"
+            />
+          ) : (
+            <div className="bg-[#F5F5F5] flex items-center justify-center size-12 rounded-full">
+              {currentChat.groupName[0]}
+            </div>
+          )}
+
           <div className="flex flex-col gap-1">
-            <h1 className="font-medium">{currentChat.otherUser.username}</h1>
+            <h1 className="font-medium">
+              {currentChat.type === "private"
+                ? currentChat.otherUsers.username
+                : currentChat.groupName}
+            </h1>
             <p className="text-[#8C8C8C] text-sm font-normal">
-              {currentChat.otherUser.bio}
+              {currentChat.type === "private"
+                ? currentChat.otherUsers.bio
+                : currentChat.bio}
             </p>
           </div>
         </div>

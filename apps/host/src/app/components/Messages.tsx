@@ -19,8 +19,10 @@ export const Messages = () => {
 
   const [allMessages, setAllMessages] = useState<Message[]>([]);
 
+  console.log("currentChat", currentChat);
   const { data, isLoading, error } = useSWR(currentChat?._id, getMessages);
 
+  console.log("DATA", data);
   const scrollToBottom = () => {
     return lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -59,7 +61,7 @@ export const Messages = () => {
           return {
             ...msg,
             status: "seen",
-          }; 
+          };
         }
 
         return msg;
@@ -71,7 +73,7 @@ export const Messages = () => {
     if (data?.messages) {
       setAllMessages(data.messages);
     }
-  }, [data?.messages, isLoading]);
+  }, [data?.messages, isLoading, currentChat?._id]);
 
   useEffect(() => {
     scrollToBottom();
@@ -134,7 +136,7 @@ export const Messages = () => {
                 src={
                   msg.senderId === user?._id
                     ? getAvatar(user.avatar)
-                    : getAvatar(currentChat?.otherUser.avatar)
+                    : getAvatar(currentChat?.otherUsers.avatar)
                 }
                 alt={"user"}
                 width={48}
@@ -151,7 +153,7 @@ export const Messages = () => {
                   <h2 className="font-medium">
                     {msg.senderId === user?._id
                       ? user.username
-                      : currentChat?.otherUser.username}
+                      : currentChat?.otherUsers.username}
                   </h2>
                   <p className="text-[#8C8C8C] text-sm">
                     {convertTime(msg.createdAt)}
