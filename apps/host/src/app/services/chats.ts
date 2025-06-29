@@ -30,6 +30,21 @@ export const sendMessage = async (chatId: string, content: string) => {
     throw error;
   }
 };
+export const sendGroupMessage = async (chatId: string, content: string) => {
+  try {
+    const response = (await axiosInstance.post(
+      `/chat/group/${chatId}`,
+      {
+        content,
+      }
+    )) as AxiosResponse<{ success: boolean; message: string }>;
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 export const getMessages = async (chatId: string) => {
   try {
@@ -51,7 +66,6 @@ export const createGroupChat = async (
   try {
     const response = await axiosInstance.post(url, arg);
 
-    
     return response.data;
   } catch (error) {
     console.log(error);

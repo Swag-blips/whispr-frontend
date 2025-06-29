@@ -19,70 +19,29 @@ export const Messages = () => {
 
   const [allMessages, setAllMessages] = useState<Message[]>([]);
 
-  console.log("currentChat", currentChat);
   const { data, isLoading, error } = useSWR(currentChat?._id, getMessages);
 
-  console.log("DATA", data);
   const scrollToBottom = () => {
     return lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleMessageDelivered = (data: {
-    chatId: string;
-    messageIds: string[];
-  }) => {
-    if (data.chatId !== currentChat?._id) {
-      return;
-    }
-    setAllMessages((prevMessages) =>
-      prevMessages.map((msg) => {
-        if (data.messageIds.includes(msg._id)) {
-          return {
-            ...msg,
-            status: "delivered",
-          };
-        }
-
-        return msg;
-      })
-    );
-  };
-
-  const handleMarkMessagesAsSeen = (data: {
-    receiverId: string;
-    chatId: string;
-  }) => {
-    if (data.chatId !== currentChat?._id) {
-      return;
-    }
-    setAllMessages((prevMessages) =>
-      prevMessages.map((msg) => {
-        if (msg.status !== "seen") {
-          return {
-            ...msg,
-            status: "seen",
-          };
-        }
-
-        return msg;
-      })
-    );
-  };
-
   useEffect(() => {
+    console.log("LOADING TRIGGERED");
     if (data?.messages) {
       setAllMessages(data.messages);
     }
-  }, [data?.messages, isLoading, currentChat?._id]);
+  }, [data?.messages, isLoading]);
 
   useEffect(() => {
     scrollToBottom();
   }, [allMessages]);
+  console.log("allMessages", allMessages);
 
   useEffect(() => {
     if (!socket || !currentChat?._id) return;
 
     const handleNewMessage = (newMsg: Message) => {
+      console.log("new Message", newMsg);
       if (newMsg.chatId === currentChat._id) {
         setAllMessages((prev) => [...prev, newMsg]);
       }
@@ -98,28 +57,66 @@ export const Messages = () => {
   useEffect(() => {
     socket?.on(
       "messagesDelivered",
-      (data: { chatId: string; messageIds: string[] }) => {
-        handleMessageDelivered(data);
-      }
-    );
+      (data: { chatId: string; messageIds: string[]; receiverId: string }) => {
+        console.log("incoming data", data);
+        if (data.chatId !== currentChat?._id) {
+          console.log("NOT SAME");
+          return;
+        }
 
-    socket?.on(
-      "messagesSeen",
-      (data: { receiverId: string; chatId: string }) => {
-        handleMarkMessagesAsSeen(data);
+        console.log("about to map", allMessages);
+        setAllMessages((prevMessages) =>
+          prevMessages.map((msg) => {
+            if (msg._id && data.messageIds.includes(msg._id)) {
+              return {
+                ...msg,
+                status: "delivered",
+              };
+            } else if (!msg._id && msg.status === "sent" && msg.receiverId) {
+              return {
+                ...msg,
+                status: "delivered",
+              };
+            }
+
+            return msg;
+          })
+        );
       }
     );
 
     return () => {
-      socket?.off("messagesDelivered", handleMessageDelivered);
-      socket?.off("messagesSeen", handleMarkMessagesAsSeen);
+      socket?.off("messagesDelivered");
     };
-  }, []);
+  }, [socket, currentChat?._id, allMessages]);
+  useEffect(() => {
+    socket?.on(
+      "messagesSeen",
+      (data: { receiverId: string; chatId: string }) => {
+        if (data.chatId !== currentChat?._id) {
+          return;
+        }
+        setAllMessages((prevMessages) =>
+          prevMessages.map((msg) => {
+            if (msg.status !== "seen" && msg.senderId !== data.receiverId) {
+              return {
+                ...msg,
+                status: "seen",
+              };
+            }
+            return msg;
+          })
+        );
+      }
+    );
+
+    return () => {
+      socket?.off("messagesSeen");
+    };
+  }, [currentChat?._id, socket]);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.message || "Something went wrong"}</p>;
-
-  console.log("all messages", allMessages);
 
   return (
     <div className="flex flex-col h-full overflow-y-auto px-4 py-8">
@@ -150,11 +147,16 @@ export const Messages = () => {
                     msg.senderId === user?._id ? "flex-row-reverse" : ""
                   } items-center gap-4`}
                 >
-                  <h2 className="font-medium">
-                    {msg.senderId === user?._id
-                      ? user.username
-                      : currentChat?.otherUsers.username}
-                  </h2>
+                  {currentChat?.type === "private" ? (
+                    <h2 className="font-medium">
+                      {msg.senderId === user?._id
+                        ? user.username
+                        : currentChat?.otherUsers.username}
+                    </h2>
+                  ) : (
+                    <h2>{}</h2>
+                  )}
+
                   <p className="text-[#8C8C8C] text-sm">
                     {convertTime(msg.createdAt)}
                   </p>
@@ -166,7 +168,8 @@ export const Messages = () => {
                       : "bg-white text-black"
                   } w-fit rounded-tr-lg rounded-br-lg flex items-center gap-1 rounded-bl-lg p-4`}
                 >
-                  {msg.senderId === user?._id &&
+                  {currentChat?.type !== "group" &&
+                    msg.senderId === user?._id &&
                     (msg.status === "sent" ? (
                       <Check />
                     ) : msg.status === "delivered" ? (

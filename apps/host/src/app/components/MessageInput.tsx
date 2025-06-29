@@ -2,7 +2,7 @@
 import { Image, Mic, Send } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { sendMessage } from "../services/chats";
+import { sendGroupMessage, sendMessage } from "../services/chats";
 import { useChatStore } from "../store/chats.store";
 import { useSocket } from "../context/SocketContext";
 
@@ -56,15 +56,25 @@ export const MessageInput = () => {
 
   const handleSendMessage = async () => {
     if (loading) return;
+    if (!content) return;
     setLoading(true);
     if (!currentChat?._id) return;
     try {
-      const message = await sendMessage(currentChat?._id, content);
-
-      if (message.success) {
-        toast.success(message.message);
+      if (currentChat.type === "private") {
+        const message = await sendMessage(currentChat?._id, content);
+        if (message.success) {
+          toast.success(message.message);
+        } else {
+          toast.error(message.message);
+        }
       } else {
-        toast.error(message.message);
+        console.log("GROUP SEND")
+        const message = await sendGroupMessage(currentChat._id, content);
+        if (message.success) {
+          toast.success(message.message);
+        } else {
+          toast.error(message.message);
+        }
       }
     } catch (error) {
       console.error(error);
