@@ -32,12 +32,9 @@ export const sendMessage = async (chatId: string, content: string) => {
 };
 export const sendGroupMessage = async (chatId: string, content: string) => {
   try {
-    const response = (await axiosInstance.post(
-      `/chat/group/${chatId}`,
-      {
-        content,
-      }
-    )) as AxiosResponse<{ success: boolean; message: string }>;
+    const response = (await axiosInstance.post(`/chat/group/${chatId}`, {
+      content,
+    })) as AxiosResponse<{ success: boolean; message: string }>;
 
     return response.data;
   } catch (error) {
@@ -69,6 +66,55 @@ export const createGroupChat = async (
     return response.data;
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+};
+
+export const removeUser = async (url: string, { arg }: { arg: string }) => {
+  try {
+    const response = (await axiosInstance.post(url, {
+      memberId: arg,
+    })) as AxiosResponse<{
+      success: boolean;
+      message: string;
+    }>;
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const updateGroupDetails = async (
+  url: string,
+  { arg }: { arg: { groupName: string; bio: string } }
+) => {
+  try {
+    const response = (await axiosInstance.put(url, arg)) as AxiosResponse<{
+      success: boolean;
+      message: string;
+    }>;
+
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const addGroupMembers = async (
+  url: string,
+  { arg }: { arg: { participants: string[] } }
+) => {
+  try {
+    const response = (await axiosInstance.post(url, arg)) as AxiosResponse<{
+      success: boolean;
+      message: string;
+    }>;
+    return response.data;
+  } catch (error) {
+    console.error(error);
     throw error;
   }
 };

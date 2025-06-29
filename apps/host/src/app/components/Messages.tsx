@@ -10,6 +10,7 @@ import { convertTime } from "../utils/convertDate";
 import { useSocket } from "../context/SocketContext";
 import { Message } from "../types/types";
 import { Check, CheckCheck } from "lucide-react";
+import { getUserName } from "../utils/getUsername";
 
 export const Messages = () => {
   const { currentChat } = useChatStore();
@@ -26,7 +27,6 @@ export const Messages = () => {
   };
 
   useEffect(() => {
-    console.log("LOADING TRIGGERED");
     if (data?.messages) {
       setAllMessages(data.messages);
     }
@@ -35,13 +35,11 @@ export const Messages = () => {
   useEffect(() => {
     scrollToBottom();
   }, [allMessages]);
-  console.log("allMessages", allMessages);
 
   useEffect(() => {
     if (!socket || !currentChat?._id) return;
 
     const handleNewMessage = (newMsg: Message) => {
-      console.log("new Message", newMsg);
       if (newMsg.chatId === currentChat._id) {
         setAllMessages((prev) => [...prev, newMsg]);
       }
@@ -64,7 +62,6 @@ export const Messages = () => {
           return;
         }
 
-        console.log("about to map", allMessages);
         setAllMessages((prevMessages) =>
           prevMessages.map((msg) => {
             if (msg._id && data.messageIds.includes(msg._id)) {
@@ -154,7 +151,11 @@ export const Messages = () => {
                         : currentChat?.otherUsers.username}
                     </h2>
                   ) : (
-                    <h2>{}</h2>
+                    <h2>
+                      {msg.senderId === user?._id
+                        ? user.username
+                        : getUserName(currentChat?.otherUsers, msg.senderId)}
+                    </h2>
                   )}
 
                   <p className="text-[#8C8C8C] text-sm">

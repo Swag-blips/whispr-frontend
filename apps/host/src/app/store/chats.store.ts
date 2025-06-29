@@ -3,7 +3,7 @@ import { Chats } from "../types/types";
 
 interface ChatStore {
   currentChat: Chats | null;
-  setCurrentChat: (chat: Chats) => void;
+  setCurrentChat: (chat: Chats | null) => void;
 }
 
 export const useChatStore = create<ChatStore>((set) => ({

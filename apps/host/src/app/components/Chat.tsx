@@ -10,7 +10,7 @@ import { useEffect } from "react";
 export const Chat = () => {
   const { currentChat } = useChatStore();
   const { socket } = useSocket();
-
+  
   useEffect(() => {
     console.log("CURRENT CHAT", currentChat);
     socket?.emit("joinRoom", currentChat?._id);

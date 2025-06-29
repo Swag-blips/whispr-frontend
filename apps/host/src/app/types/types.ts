@@ -28,7 +28,7 @@ export interface Chats {
   updatedAt: number;
   __v: number;
   groupName: string;
-  otherUsers: User;
+  otherUsers: User ;
   unreadMessages: number;
 }
 
