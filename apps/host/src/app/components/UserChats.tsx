@@ -1,6 +1,7 @@
 import { Pencil, Search } from "lucide-react";
 import Chats from "./Chats";
 import { CreateGroup } from "./CreateGroup";
+import { useSocket } from "../context/SocketContext";
 
 const UserChats = () => {
   return (

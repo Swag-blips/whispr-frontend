@@ -68,7 +68,7 @@ export const MessageInput = () => {
           toast.error(message.message);
         }
       } else {
-        console.log("GROUP SEND")
+        console.log("GROUP SEND");
         const message = await sendGroupMessage(currentChat._id, content);
         if (message.success) {
           toast.success(message.message);
@@ -79,8 +79,9 @@ export const MessageInput = () => {
     } catch (error) {
       console.error(error);
       if (error instanceof Error) {
-        toast.error(error.message);
-      }
+        console.log("Error", error)
+        toast.error(error.message); 
+      }  
     } finally {
       setLoading(false);
       setContent("");

@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { getUserChats } from "../services/chats";
 import { Chats as ChatsType } from "../types/types";
 import { useChatStore } from "../store/chats.store";
 import useSWR from "swr";
 import { getAvatar } from "../utils/getUserAvatar";
+import { useSocket } from "../context/SocketContext";
 
 const Chats = () => {
   const {
@@ -15,9 +16,20 @@ const Chats = () => {
   } = useSWR("userChats", getUserChats);
 
   const { setCurrentChat } = useChatStore();
+  const { socket } = useSocket();
 
   if (isLoading) return <div>Loading....</div>;
   if (error) return <div>{error}</div>;
+
+  useEffect(() => {
+    socket?.on("addToChats", (data) => {
+      console.log(data);
+    });
+
+    return () => {
+      socket?.off("addToChats");
+    };
+  }, [socket]);
 
   return (
     <>
