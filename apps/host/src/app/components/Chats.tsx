@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getUserChats } from "../services/chats";
 import { Chats as ChatsType } from "../types/types";
 import { useChatStore } from "../store/chats.store";
@@ -9,33 +9,56 @@ import { getAvatar } from "../utils/getUserAvatar";
 import { useSocket } from "../context/SocketContext";
 
 const Chats = () => {
+  const [allUserChats, setAllUserChats] = useState<ChatsType[]>([]);
   const {
     data: userChats,
     isLoading,
     error,
   } = useSWR("userChats", getUserChats);
 
-  const { setCurrentChat } = useChatStore();
+  const { setCurrentChat, currentChat } = useChatStore();
   const { socket } = useSocket();
 
-  if (isLoading) return <div>Loading....</div>;
-  if (error) return <div>{error}</div>;
-
   useEffect(() => {
-    socket?.on("addToChats", (data) => {
-      console.log(data);
+    if (userChats?.chats.length) {
+      setAllUserChats(userChats.chats);
+    }
+  }, [userChats, isLoading]);
+
+  const handleUpdateChat = (data: { chatId: string; content: string }) => {
+    console.log("new chat for user");
+    setAllUserChats((prevUserChats) =>
+      prevUserChats.map((chat) => {
+        if (chat._id === data.chatId) {
+          return {
+            ...chat,
+            lastMessage: data.content,
+            unreadMessages: chat.unreadMessages + 1,
+          };
+        }
+        return chat;
+      })
+    );
+  };
+  useEffect(() => {
+    console.log("HELLo");
+    socket?.on("addToChats", (data: { chatId: string; content: string }) => {
+      if (currentChat?._id === data.chatId) return;
+      handleUpdateChat(data);
     });
 
     return () => {
       socket?.off("addToChats");
     };
   }, [socket]);
+  if (isLoading) return <div>Loading....</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
-      {userChats && userChats?.chats.length > 0 ? (
-        userChats?.chats
-          .sort((a, b) => b.updatedAt - a.updatedAt)
+      {allUserChats && allUserChats?.length > 0 ? (
+        allUserChats
+          ?.sort((a, b) => b.updatedAt - a.updatedAt)
           .map((chat: ChatsType) => (
             <div
               onClick={() => setCurrentChat(chat)}

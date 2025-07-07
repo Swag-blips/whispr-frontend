@@ -58,7 +58,7 @@ const OtpInputs = ({ email }: Props) => {
       } else {
         toast.error(response.message);
       }
-    } catch (error) {
+    } catch (error) { 
       console.error(error);
     } finally {
       setLoading(false);
