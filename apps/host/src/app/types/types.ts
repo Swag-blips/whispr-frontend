@@ -28,7 +28,7 @@ export interface Chats {
   updatedAt: number;
   __v: number;
   groupName: string;
-  otherUsers: User ;
+  otherUsers: User;
   unreadMessages: number;
 }
 
@@ -48,11 +48,20 @@ export interface Message {
   _id: string;
   chatId: string;
   content: string;
-  receiverId: string;
+  receiverId?: string;
   senderId: string;
   createdAt: Date;
-  updatedAt: string;
+  updatedAt: Date;
   __v: number;
-  otherUserDetails: User;
-  status: "delivered" | "sent" | "seen";
+  otherUserDetails?: User;
+  receivers?: string[];
+  status?: "delivered" | "sent" | "seen";
+  messageType?: "text" | "file" | "system";
+  systemAction?:
+    | "user_removed"
+    | "user_added"
+    | "left_group"
+    | "group_renamed"
+    | "user_promoted";
+  meta?: Record<string, any>;
 }

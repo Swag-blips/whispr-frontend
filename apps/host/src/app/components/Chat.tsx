@@ -12,7 +12,6 @@ export const Chat = () => {
   const { socket } = useSocket();
   
   useEffect(() => {
-    console.log("CURRENT CHAT", currentChat);
     socket?.emit("joinRoom", currentChat?._id);
 
     return () => {

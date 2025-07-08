@@ -18,7 +18,7 @@ const Chats = () => {
 
   const { setCurrentChat, currentChat } = useChatStore();
   const { socket } = useSocket();
-
+  
   useEffect(() => {
     if (userChats?.chats.length) {
       setAllUserChats(userChats.chats);
@@ -41,7 +41,7 @@ const Chats = () => {
     );
   };
   useEffect(() => {
-    console.log("HELLo");
+   
     socket?.on("addToChats", (data: { chatId: string; content: string }) => {
       if (currentChat?._id === data.chatId) return;
       handleUpdateChat(data);

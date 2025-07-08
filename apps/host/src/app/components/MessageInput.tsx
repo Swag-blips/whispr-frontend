@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { sendGroupMessage, sendMessage } from "../services/chats";
 import { useChatStore } from "../store/chats.store";
 import { useSocket } from "../context/SocketContext";
+import { mutate } from "swr";
 
 function debounce(cb: (...args: any[]) => void, delay = 1000) {
   let timeout: NodeJS.Timeout;
@@ -68,20 +69,20 @@ export const MessageInput = () => {
           toast.error(message.message);
         }
       } else {
-        console.log("GROUP SEND");
         const message = await sendGroupMessage(currentChat._id, content);
         if (message.success) {
           toast.success(message.message);
         } else {
-          toast.error(message.message);
-        }
+          toast.error(message.message); 
+        } 
       }
+      mutate("userChats");
     } catch (error) {
       console.error(error);
       if (error instanceof Error) {
-        console.log("Error", error)
-        toast.error(error.message); 
-      }  
+        console.log("Error", error);
+        toast.error(error.message);
+      }
     } finally {
       setLoading(false);
       setContent("");
