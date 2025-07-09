@@ -18,7 +18,11 @@ export const getUserChats = async () => {
   }
 };
 
-export const sendMessage = async (chatId: string, content: string) => {
+export const sendMessage = async (
+  chatId: string,
+  content: string,
+  tempId: string
+) => {
   try {
     const response = (await axiosInstance.post(`/chat/message/${chatId}`, {
       content,

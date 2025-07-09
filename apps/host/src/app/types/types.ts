@@ -50,9 +50,9 @@ export interface Message {
   content: string;
   receiverId?: string;
   senderId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+
   otherUserDetails?: User;
   receivers?: string[];
   status?: "delivered" | "sent" | "seen";

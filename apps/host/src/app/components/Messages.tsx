@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import useSWR, { mutate } from "swr";
 import { getMessages } from "../services/chats";
 import { useChatStore } from "../store/chats.store";
@@ -11,19 +11,23 @@ import { useSocket } from "../context/SocketContext";
 import { Message } from "../types/types";
 import { Check, CheckCheck } from "lucide-react";
 import { getUserName } from "../utils/getUsername";
+import { useMessageStore } from "../store/message.store";
 
 export const Messages = () => {
   const { currentChat, setCurrentChat } = useChatStore();
+  const { allMessages, setAllMessages, addMessage } = useMessageStore();
   const { socket } = useSocket();
   const { user } = useAuth();
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
-
-  const [allMessages, setAllMessages] = useState<Message[]>([]);
 
   const { data, isLoading, error } = useSWR(currentChat?._id, getMessages);
 
   const scrollToBottom = () => {
     return lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const updateMessages = (updater: (msgs: Message[]) => Message[]) => {
+    setAllMessages(updater(allMessages));
   };
 
   const handleAddMember = (data: {
@@ -55,27 +59,22 @@ export const Messages = () => {
       };
       setCurrentChat(updated);
     }
-    setAllMessages((prev) => [
-      ...prev,
-      {
-        content,
-        chatId,
-        senderId: "",
-        __v: 0,
-        messageType,
-        systemAction,
-        _id: messageId,
-        createdAt,
-        meta,
-        updatedAt: new Date(), 
-      },
-    ]);
-  
+    addMessage({
+      content,
+      chatId,
+      senderId: "",
+      messageType,
+      systemAction,
+      _id: messageId,
+      createdAt,
+      meta,
+      updatedAt: new Date(),
+    });
     mutate("userChats");
   };
 
   useEffect(() => {
-    if (data?.messages) {  
+    if (data?.messages) {
       setAllMessages(data.messages);
     }
   }, [data?.messages, isLoading]);
@@ -89,7 +88,7 @@ export const Messages = () => {
 
     const handleNewMessage = (newMsg: Message) => {
       if (newMsg.chatId === currentChat._id) {
-        setAllMessages((prev) => [...prev, newMsg]);
+        addMessage(newMsg);
       }
     };
 
@@ -109,7 +108,7 @@ export const Messages = () => {
           return;
         }
 
-        setAllMessages((prevMessages) =>
+        updateMessages((prevMessages) =>
           prevMessages.map((msg) => {
             if (msg._id && data.messageIds.includes(msg._id)) {
               return {
@@ -140,7 +139,7 @@ export const Messages = () => {
         if (data.chatId !== currentChat?._id) {
           return;
         }
-        setAllMessages((prevMessages) =>
+        updateMessages((prevMessages) =>
           prevMessages.map((msg) => {
             if (msg.status !== "seen" && msg.senderId !== data.receiverId) {
               return {
@@ -211,112 +210,107 @@ export const Messages = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.message || "Something went wrong"}</p>;
 
-  console.log(allMessages, currentChat);
-
   return (
     <div className="flex flex-col h-full overflow-y-auto px-4 py-8">
       <div className="flex-col pb-[90px] flex gap-6">
         {allMessages.length > 0 ? (
           allMessages.map((msg, index) => (
-            <>
-              <>
-                {currentChat?.type === "group" &&
-                msg.messageType === "system" ? (
-                  <div className="flex items-center gap-2 justify-center">
+            <div key={msg._id}>
+              {currentChat?.type === "group" && msg.messageType === "system" ? (
+                <div className="flex items-center gap-2 justify-center">
+                  <Image
+                    width={20}
+                    height={20}
+                    src={getAvatar(msg.meta?.memberAvatar)}
+                    alt="avatar"
+                    className="rounded-full"
+                  />
+                  {msg.content}
+                </div>
+              ) : (
+                <div
+                  key={index}
+                  className={`flex ${msg.senderId === user?._id ? "ml-auto flex-row-reverse" : ""} items-start gap-2`}
+                >
+                  {currentChat?.type === "private" ? (
                     <Image
-                      width={20}
-                      height={20}
-                      src={getAvatar(msg.meta?.memberAvatar)}
-                      alt="avatar"
+                      src={
+                        msg.senderId === user?._id
+                          ? getAvatar(user.avatar)
+                          : getAvatar(currentChat?.otherUsers.avatar)
+                      }
+                      alt={"user"}
+                      width={48}
+                      height={48}
                       className="rounded-full"
                     />
-                    {msg.content}
-                  </div>
-                ) : (
-                  <div
-                    key={index}
-                    className={`flex ${msg.senderId === user?._id ? "ml-auto flex-row-reverse" : ""} items-start gap-2`}
-                  >
-                    {currentChat?.type === "private" ? (
-                      <Image
-                        src={
-                          msg.senderId === user?._id
-                            ? getAvatar(user.avatar)
-                            : getAvatar(currentChat?.otherUsers.avatar)
-                        }
-                        alt={"user"}
-                        width={48}
-                        height={48}
-                        className="rounded-full"
-                      />
-                    ) : (
-                      <Image
-                        src={
-                          msg.senderId === user?._id
-                            ? getAvatar(user.avatar)
-                            : getAvatar(
-                                undefined,
-                                "group",
+                  ) : (
+                    <Image
+                      src={
+                        msg.senderId === user?._id
+                          ? getAvatar(user.avatar)
+                          : getAvatar(
+                              undefined,
+                              "group",
+                              currentChat?.otherUsers,
+                              msg.senderId
+                            )
+                      }
+                      alt={"user"}
+                      width={48}
+                      height={48}
+                      className="rounded-full"
+                    />
+                  )}
+
+                  <div className="flex flex-col gap-2">
+                    <div
+                      className={`flex ${msg.senderId === user?._id ? "flex-row-reverse" : ""} items-center gap-4`}
+                    >
+                      {currentChat?.type === "private" ? (
+                        <h2 className="font-medium">
+                          {msg.senderId === user?._id
+                            ? user.username
+                            : currentChat?.otherUsers.username}
+                        </h2>
+                      ) : (
+                        <h2>
+                          {msg.senderId === user?._id
+                            ? user.username
+                            : getUserName(
                                 currentChat?.otherUsers,
                                 msg.senderId
-                              )
-                        }
-                        alt={"user"}
-                        width={48}
-                        height={48}
-                        className="rounded-full"
-                      />
-                    )}
+                              )}
+                        </h2>
+                      )}
 
-                    <div className="flex flex-col gap-2">
-                      <div
-                        className={`flex ${msg.senderId === user?._id ? "flex-row-reverse" : ""} items-center gap-4`}
-                      >
-                        {currentChat?.type === "private" ? (
-                          <h2 className="font-medium">
-                            {msg.senderId === user?._id
-                              ? user.username
-                              : currentChat?.otherUsers.username}
-                          </h2>
-                        ) : (
-                          <h2>
-                            {msg.senderId === user?._id
-                              ? user.username
-                              : getUserName(
-                                  currentChat?.otherUsers,
-                                  msg.senderId
-                                )}
-                          </h2>
-                        )}
-
-                        <p className="text-[#8C8C8C] text-sm">
-                          {convertTime(msg.createdAt)}
-                        </p>
-                      </div>
-                      <p
-                        className={`${
-                          msg.senderId === user?._id
-                            ? "bg-[#444CE7] text-white ml-auto"
-                            : "bg-white text-black"
-                        } w-fit rounded-tr-lg rounded-br-lg flex items-center gap-1 rounded-bl-lg p-4`}
-                      >
-                        {currentChat?.type !== "group" &&
-                          msg.senderId === user?._id &&
-                          (msg.status === "sent" ? (
-                            <Check />
-                          ) : msg.status === "delivered" ? (
-                            <CheckCheck />
-                          ) : (
-                            ""
-                          ))}
-
-                        {msg.content}
+                      <p className="text-[#8C8C8C] text-sm">
+                        {convertTime(msg.createdAt)}
                       </p>
                     </div>
+                    <p
+                      className={`${
+                        msg.senderId === user?._id
+                          ? "bg-[#444CE7] text-white ml-auto"
+                          : "bg-white text-black"
+                      } w-fit rounded-tr-lg rounded-br-lg flex items-center gap-1 rounded-bl-lg p-4`}
+                    >
+                      {currentChat?.type !== "group" &&
+                        msg.senderId === user?._id &&
+                        (msg.status === "sent" ? (
+                          <Check />
+                        ) : msg.status === "delivered" ? (
+                          <CheckCheck />
+                        ) : (
+                          ""
+                        ))}
+
+                      {msg.content}
+                    </p>
                   </div>
-                )}
-              </>
-            </>
+                </div>
+              )}
+            </div>
           ))
         ) : (
           <div>Start your Conversation</div>

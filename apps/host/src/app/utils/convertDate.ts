@@ -12,7 +12,8 @@ export const convertDate = (date: Date) => {
   return `${dayOfWeek} ${formattedTime}`;
 };
 
-export const convertTime = (date: Date) => {
+export const convertTime = (date: Date | undefined) => {
+  if (!date) return;
   const dateObject = new Date(date);
 
   const formattedTime = dateObject.toLocaleTimeString("en-US", {

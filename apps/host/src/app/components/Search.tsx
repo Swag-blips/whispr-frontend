@@ -7,7 +7,7 @@ import { NavState } from "./SidebarNav";
 import { useState } from "react";
 import { User } from "../types/types";
 import { axiosInstance } from "../api/api";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import Users from "./Users";
 import { Generating } from "@repo/ui/icons/Generating";
 
@@ -26,11 +26,11 @@ export const Search = ({ setOpen }: Props) => {
       return;
     }
 
-    try {
+    try { 
       const response = (await axiosInstance.get(
         `/user/${username}`
       )) as AxiosResponse<{ success: boolean; results: User[] }>;
-
+ 
       console.log(response);
       if (response.data.success) {
         setUsers(response.data.results);

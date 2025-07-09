@@ -6,7 +6,9 @@ import { sendGroupMessage, sendMessage } from "../services/chats";
 import { useChatStore } from "../store/chats.store";
 import { useSocket } from "../context/SocketContext";
 import { mutate } from "swr";
-
+import { v4 as uuid } from "uuid";
+import { useMessageStore } from "../store/message.store";
+import { useAuth } from "../context/AuthContext";
 function debounce(cb: (...args: any[]) => void, delay = 1000) {
   let timeout: NodeJS.Timeout;
   return (...args: any[]) => {
@@ -19,9 +21,11 @@ function debounce(cb: (...args: any[]) => void, delay = 1000) {
 
 export const MessageInput = () => {
   const { currentChat } = useChatStore();
+  const { user } = useAuth();
   const { socket } = useSocket();
   const [userIsTyping, setUserIsTyping] = useState("");
   const [content, setContent] = useState("");
+  const { addMessage } = useMessageStore();
   const [loading, setLoading] = useState(false);
 
   const debounceStopTypingRef = useRef(
@@ -56,15 +60,24 @@ export const MessageInput = () => {
   };
 
   const handleSendMessage = async () => {
+    const tempId = uuid();
     if (loading) return;
-    if (!content) return;
+    if (!content.trim() || !user?._id) return;
     setLoading(true);
     if (!currentChat?._id) return;
     try {
       if (currentChat.type === "private") {
-        const message = await sendMessage(currentChat?._id, content);
+        const message = await sendMessage(currentChat?._id, content, tempId);
         if (message.success) {
           toast.success(message.message);
+          addMessage({
+            _id: tempId,
+            chatId: currentChat._id,
+            content,
+            senderId: user?._id,
+            messageType:"text",
+            
+          });
         } else {
           toast.error(message.message);
         }
@@ -73,8 +86,8 @@ export const MessageInput = () => {
         if (message.success) {
           toast.success(message.message);
         } else {
-          toast.error(message.message); 
-        } 
+          toast.error(message.message);
+        }
       }
       mutate("userChats");
     } catch (error) {
