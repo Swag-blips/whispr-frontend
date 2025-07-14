@@ -7,6 +7,9 @@ import { useChatStore } from "../store/chats.store";
 import useSWR from "swr";
 import { getAvatar } from "../utils/getUserAvatar";
 import { useSocket } from "../context/SocketContext";
+import { useNotificationStore } from "../store/notification.store";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Chats = () => {
   const [allUserChats, setAllUserChats] = useState<ChatsType[]>([]);
@@ -15,9 +18,42 @@ const Chats = () => {
     isLoading,
     error,
   } = useSWR("userChats", getUserChats);
-
+  const { user } = useAuth();
+  const initNotifications = useNotificationStore(
+    (state) => state.initNotifications
+  );
+  const notifications = useNotificationStore((state) => state.notifications);
   const { setCurrentChat, currentChat } = useChatStore();
   const { socket } = useSocket();
+
+  useEffect(() => {
+    if (user?._id) {
+      initNotifications(user._id);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!notifications.length) return;
+    toast.custom((t) => (
+      <div
+        className={`bg-white p-4 rounded shadow-md flex items-center gap-3 max-w-sm ${
+          t.visible ? "animate-enter" : "animate-leave"
+        }`}
+      >
+        <img
+          src={notifications[notifications.length - 1].sender.avatar}
+          alt={notifications[notifications.length - 1].sender.username}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <span className="text-gray-800 text-sm">
+          <strong>
+            {notifications[notifications.length - 1].sender.username}
+          </strong>{" "}
+          sent you a friend request
+        </span>
+      </div>
+    ));
+  }, [notifications]);
 
   useEffect(() => {
     if (userChats?.chats.length) {

@@ -10,12 +10,14 @@ import useSWR, { mutate } from "swr";
 import { getMessages } from "../services/chats";
 import { Message } from "../types/types";
 import { useAuth } from "../context/AuthContext";
+import { useNotificationStore } from "../store/notification.store";
 
 export const Chat = () => {
   const { currentChat } = useChatStore();
   const { socket } = useSocket();
   const { user } = useAuth();
   const { data, isLoading, error } = useSWR(currentChat?._id, getMessages);
+
   const [allMessages, setAllMessages] = useState<Message[]>([]);
 
   useEffect(() => {
@@ -32,7 +34,8 @@ export const Chat = () => {
     }
   }, [data?.messages, isLoading]);
 
-  // Add message optimistically
+
+
   const addMessage = (msg: Message) => {
     setAllMessages((prev) => [...prev, msg]);
   };
@@ -72,7 +75,6 @@ export const Chat = () => {
 
   if (!currentChat) return null;
 
-  console.log("allMessages", allMessages);
   return (
     <div className="flex-1 relative bg-[#F6F8FC] h-full flex flex-col">
       <ChatHeader currentChat={currentChat} />

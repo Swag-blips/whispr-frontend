@@ -113,12 +113,12 @@ export const Messages = ({
       };
       setCurrentChat(updated);
     }
-
+ 
     setAllMessages((prev) => [
       ...prev,
       {
         content,
-        chatId,
+        chatId,  
         senderId: "",
         messageType,
         systemAction,
