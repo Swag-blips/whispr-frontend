@@ -16,6 +16,7 @@ export interface Notification {
   createdAt: Date;
   updatedAt: string;
   __v: number;
+  read: boolean;
 }
 
 export interface Chats {

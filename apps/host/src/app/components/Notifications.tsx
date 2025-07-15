@@ -3,18 +3,24 @@ import Logo from "../../../public/Logo.svg";
 import { X } from "lucide-react";
 import { NavState } from "./SidebarNav";
 import Image from "next/image";
-import { getNotifications } from "../services/notification";
+import {
+  getNotifications,
+  markNotificationAsRead,
+} from "../services/notification";
 import toast from "react-hot-toast";
 import { Notification } from "../types/types";
 import { convertDate } from "../utils/convertDate";
 import { acceptFriendRequest, declineFriendRequest } from "../services/friend";
 import { Generating } from "@repo/ui/icons/Generating";
+import useSWRMutation from "swr/mutation";
+import { AxiosError } from "axios";
 type Props = {
   setOpen: (state: NavState) => void;
 };
 
 export const Notifications = ({ setOpen }: Props) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+
   const [loading, setLoading] = useState(false);
   const fetchNotifications = async () => {
     try {
@@ -24,6 +30,20 @@ export const Notifications = ({ setOpen }: Props) => {
       setNotifications(notifications.data.notifications);
     } catch (error) {
       if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  const handleMarkNotificationsAsRead = async (notificationIds: string[]) => {
+    try {
+      const notifications = markNotificationAsRead(notificationIds);
+      return notifications;
+    } catch (error) {
+      console.error(error);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+      } else if (error instanceof Error) {
         toast.error(error.message);
       }
     }
@@ -77,6 +97,21 @@ export const Notifications = ({ setOpen }: Props) => {
   useEffect(() => {
     fetchNotifications();
   }, []);
+
+  useEffect(() => {
+    if (!notifications.length) return;
+
+    const unreadNotifications = notifications.filter(
+      (notification) => !notification.read
+    );
+
+    if (unreadNotifications.length) {
+      const unreadIds = unreadNotifications.map(
+        (unreadNotification) => unreadNotification._id
+      );
+      handleMarkNotificationsAsRead(unreadIds);
+    }
+  }, [notifications]);
   return (
     <div className="fixed inset-0 bg-black/20 py-4 backdrop-blur-[10px] pr-8  top-0 z-50">
       <div className="bg-white h-full w-[345px] ml-auto rounded-lg">

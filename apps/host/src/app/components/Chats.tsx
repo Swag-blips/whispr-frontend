@@ -34,6 +34,7 @@ const Chats = () => {
 
   useEffect(() => {
     if (!notifications.length) return;
+    const latestNotification = notifications[notifications.length - 1];
     toast.custom((t) => (
       <div
         className={`bg-white p-4 rounded shadow-md flex items-center gap-3 max-w-sm ${
@@ -41,17 +42,17 @@ const Chats = () => {
         }`}
       >
         <img
-          src={notifications[notifications.length - 1].sender.avatar}
-          alt={notifications[notifications.length - 1].sender.username}
+          src={latestNotification.sender.avatar}
+          alt={latestNotification.sender.username}
           className="w-10 h-10 rounded-full object-cover"
         />
         <span className="text-gray-800 text-sm">
-          <strong>
-            {notifications[notifications.length - 1].sender.username}
-          </strong>{" "}
-          sent you a friend request
+          <strong>{latestNotification.sender.username}</strong>{" "}
+          {latestNotification.type === "sendFriendRequest"
+            ? "sent you a friend request"
+            : "accepted your friend request"}
         </span>
-      </div>
+      </div> 
     ));
   }, [notifications]);
 
