@@ -5,12 +5,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import OtpInputs from "./components/OtpInputs";
 
-const OtpPage = ({
+const OtpPage = async ({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ token: string }>;
 }) => {
-  const email = searchParams?.email;
+  const email = await searchParams?.then((param) => param.token);
 
   if (!email) {
     redirect("/auth");
