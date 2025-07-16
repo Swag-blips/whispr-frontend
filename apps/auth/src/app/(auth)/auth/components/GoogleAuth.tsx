@@ -2,9 +2,9 @@
 import { Google } from "@/app/components/icons";
 import { useRouter } from "next/navigation";
 
-type Props = {};
 
-export const GoogleAuth = (props: Props) => {
+
+export const GoogleAuth = () => {
   const router = useRouter();
   const handleClick = () => {
     const callbackUrl = "http://localhost:3006/auth/callback/google/";

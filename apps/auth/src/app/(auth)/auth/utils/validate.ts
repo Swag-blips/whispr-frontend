@@ -3,8 +3,8 @@ import toast from "react-hot-toast";
 
 export const validateSignup = (payload: RegisterPayload) => {
   let isValid = true;
-  const { email, password, bio, username } = payload;
-  let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const { email, password, username } = payload;
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   if (!regex.test(email.trim()) || !email.trim()) {
     toast.error("Invalid email");
@@ -34,4 +34,3 @@ export const validateSignup = (payload: RegisterPayload) => {
 
   return isValid;
 };
- 

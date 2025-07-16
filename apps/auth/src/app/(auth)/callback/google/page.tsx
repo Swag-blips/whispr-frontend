@@ -3,9 +3,6 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { authenticateWithGoogle } from "./services/service";
 import { Generating } from "@repo/ui/icons/Generating";
-import useSWR from "swr";
-
-type Props = {};
 
 const GoogleCallback = () => {
   const code = useSearchParams().get("code");

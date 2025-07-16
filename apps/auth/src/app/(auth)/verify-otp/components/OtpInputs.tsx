@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { resendOtp, verifyOtp } from "../services/service";
 import toast from "react-hot-toast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Generating } from "@repo/ui/icons/Generating";
 
 
@@ -21,7 +21,7 @@ const OtpInputs = ({ email }: Props) => {
   const handleChange = (value: string, index: number) => {
     const parsedValue = parseInt(value);
     if (parsedValue > 9) return;
-    let newArr = [...otp];
+    const newArr = [...otp];
     newArr[index] = value;
     setOtp(newArr);
 

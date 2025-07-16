@@ -1,6 +1,5 @@
-type Props = {};
 
-const Google = (props: Props) => {
+const Google = () => {
   return (
     <svg
       width="24"

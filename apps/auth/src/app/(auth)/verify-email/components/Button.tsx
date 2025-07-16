@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 
 const Button = () => {
   const [countDown, setCountDown] = useState(60 * 1);
-  const [runTimer, setRunTimer] = useState(false);
 
   useEffect(() => {
-    let timerId: ReturnType<typeof setInterval>;
+    let timerId: ReturnType<typeof setInterval> | null = null;
 
     timerId = setInterval(() => {
       setCountDown((countDown) => countDown - 1);
