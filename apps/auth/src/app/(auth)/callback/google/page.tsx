@@ -1,5 +1,5 @@
 "use client";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { authenticateWithGoogle } from "./services/service";
 import { Generating } from "@repo/ui/icons/Generating";
@@ -28,7 +28,7 @@ const GoogleCallback = () => {
   }, [code]);
 
   if (!code) {
-    redirect("/auth");
+    router.push("/auth");
   }
 
   if (loading) {
