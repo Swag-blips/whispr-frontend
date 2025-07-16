@@ -1,7 +1,6 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import emailGif from "../../../../../public/emailGif.gif";
-
 import Link from "next/link";
 import { decodeJwt } from "./utils/decodeToken";
 import { verifyEmail } from "./services/service";
@@ -9,9 +8,9 @@ import { verifyEmail } from "./services/service";
 const CallbackVerification = async ({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ token: string }>;
 }) => {
-  const token = await searchParams?.token;
+  const token = await searchParams?.then((param) => param.token);
 
   const email = decodeJwt(token as string);
 
