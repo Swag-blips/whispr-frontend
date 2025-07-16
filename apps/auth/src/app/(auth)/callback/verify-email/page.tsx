@@ -7,12 +7,12 @@ import Link from "next/link";
 import { decodeJwt } from "./utils/decodeToken";
 import { verifyEmail } from "./services/service";
 
-const CallbackVerification = ({
+const CallbackVerification = async ({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
-  const token = searchParams?.token;
+  const token = await searchParams?.token;
 
   const email = decodeJwt(token as string);
 

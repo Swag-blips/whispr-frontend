@@ -4,3 +4,4 @@ export function decodeJwt(token: string) {
   const decodedPayload = JSON.parse(atob(payload));
   return decodedPayload.email || null;
 }
+ 
