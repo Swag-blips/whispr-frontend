@@ -1,5 +1,4 @@
-import React, { use } from "react";
-
+import React from "react";
 import { redirect } from "next/navigation";
 import emailGif from "../../../../../public/emailGif.gif";
 
@@ -20,7 +19,7 @@ const CallbackVerification = async ({
     redirect("/auth");
   }
 
-  const verify = use(verifyEmail(token));
+  const verify = await verifyEmail(token);
 
   return (
     <main className="text-black flex items-center flex-col h-screen justify-center">
