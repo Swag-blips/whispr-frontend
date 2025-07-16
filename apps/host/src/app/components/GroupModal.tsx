@@ -5,6 +5,7 @@ import { getFriends } from "../services/user";
 import { getAvatar } from "../utils/getUserAvatar";
 import useSWRMutation from "swr/mutation";
 import { createGroupChat } from "../services/chats";
+import toast from "react-hot-toast";
 
 interface GroupModalProps {
   open: boolean;
@@ -88,13 +89,17 @@ const GroupModal = ({ open, onClose }: GroupModalProps) => {
           <button
             className="bg-[#444CE7] text-white rounded-lg py-2 mt-2 font-medium hover:bg-[#373fcf] transition"
             onClick={async () => {
-              await createGroup({
-                bio,
-                groupName,
-                participants: selectedUsers,
-              });
-              mutate("userChats");
-              onClose();
+              try {
+                await createGroup({
+                  bio,
+                  groupName,
+                  participants: selectedUsers,
+                });
+                mutate("userChats");
+                onClose();
+              } catch (error: any) {
+                toast.error(error.response.data.message);
+              }
             }}
             disabled={isCreating}
           >
@@ -105,5 +110,5 @@ const GroupModal = ({ open, onClose }: GroupModalProps) => {
     </div>
   );
 };
-
-export default GroupModal;
+ 
+export default GroupModal; 

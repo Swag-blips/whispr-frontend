@@ -4,7 +4,7 @@ import { createContext } from "react";
 import { axiosInstance } from "../api/api";
 import { AxiosResponse } from "axios";
 import { User } from "../types/types";
-
+ 
 type AuthContextType = {
   user: User | null;
   setUser: (user: User) => void;

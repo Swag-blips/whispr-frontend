@@ -30,15 +30,13 @@ export default function SidebarNav() {
   useEffect(() => {
     const handleUpdateNotification = () => {
       setNotificationCount(
-        (prevNotificationCount) =>
-          prevNotificationCount + notificationStore.length
+        (prevNotificationCount) => prevNotificationCount + 1
       );
-    };
+    };   
     handleUpdateNotification();
   }, [notificationStore]);
 
-  console.log("notification count", notificationCount);
-  return (
+  return (  
     <nav className="flex flex-col gap-4">
       {open === "Search" && <SearchComponent setOpen={setOpen} />}
       {open === "Notifications" && <Notifications setOpen={setOpen} />}
@@ -55,7 +53,7 @@ export default function SidebarNav() {
 
           {notificationCount ? (
             <div className="size-3 absolute top-0 right-0 text-white text-[10px] bg-red-500 rounded-full flex items-center justify-center">
-            {notificationCount}
+              {notificationCount}
             </div>
           ) : (
             ""

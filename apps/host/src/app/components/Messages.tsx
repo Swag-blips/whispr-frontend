@@ -140,9 +140,11 @@ export const Messages = ({
       (data: { chatId: string; messageIds: string[]; receiverId: string }) => {
         console.log("incoming data", data);
         if (data.chatId !== currentChat?._id) {
+          
           return;
         }
 
+        console.log("updating state")
         setAllMessages((prevMessages) =>
           prevMessages.map((msg) => {
             if (msg._id && data.messageIds.includes(msg._id)) {
@@ -155,6 +157,11 @@ export const Messages = ({
                 ...msg,
                 status: "delivered",
               };
+            }else if(msg.status === "sent" && msg.receiverId === data.receiverId){
+               return {
+                 ...msg,
+                 status: "delivered",
+               };
             }
 
             return msg;

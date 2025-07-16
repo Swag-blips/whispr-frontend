@@ -35,7 +35,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (user) {
-      const socket = io("http://localhost:3005/", {
+      const socket = io("http://localhost:3005", {
         query: {
           userId: user._id,
         },
