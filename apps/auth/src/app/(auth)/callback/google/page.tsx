@@ -8,7 +8,7 @@ const GoogleCallback = () => {
   const code = useSearchParams().get("code");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
+  
   const authenticateWithGoogleWrapper = async () => {
     try {
       const response = await authenticateWithGoogle(code!);
@@ -37,11 +37,13 @@ const GoogleCallback = () => {
         <Generating />
         <p>Authenticating with google</p>
       </main>
-    );
+    );  
   }
 
   return (
-    <main className="flex items-center flex-col gap-2 justify-center h-screen"></main>
+    <main className="flex items-center flex-col gap-2 justify-center h-screen">
+      heloo
+    </main>
   );
 };
 
