@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "lh3.googleusercontent.com", 
+        hostname: "lh3.googleusercontent.com",
       },
     ],
   },
@@ -24,14 +24,14 @@ const nextConfig: NextConfig = {
         destination:
           process.env.NODE_ENV === "development"
             ? "http://localhost:3007/auth"
-            : "https://whispr-auth.vercel.app/",
+            : "https://whispr-auth.vercel.app/auth",
       },
       {
         source: "/auth/:path*",
         destination:
           process.env.NODE_ENV === "development"
             ? "http://localhost:3007/auth/:path*"
-            : "https://whispr-auth.vercel.app/auth/:path*",
+            : " https://whispr-auth.vercel.app/auth/:path*",
       },
     ];
   },
