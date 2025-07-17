@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
             ? "http://localhost:3007/auth"
             : "https://whispr-auth.vercel.app/auth",
       },
-      {
+      { 
         source: "/auth/:path*",
         destination:
           process.env.NODE_ENV === "development"
