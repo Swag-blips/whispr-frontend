@@ -8,9 +8,9 @@ export const getAvatar = (
   senderId?: string
 ) => {
   if (type === "group") {
-    if (Array.isArray(otherUsers)) {
+    if (Array.isArray(otherUsers)) { 
       const user = otherUsers.find((user: User) => user._id === senderId);
-
+ 
       console.log("user", user);
       return user?.avatar
         ? user.avatar
