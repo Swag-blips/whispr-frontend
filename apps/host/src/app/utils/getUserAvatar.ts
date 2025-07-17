@@ -9,7 +9,7 @@ export const getAvatar = (
 ) => {
   if (type === "group") {
     if (Array.isArray(otherUsers)) {
-      const user = otherUsers.find((user: any) => user._id === senderId);
+      const user = otherUsers.find((user: User) => user._id === senderId);
 
       console.log("user", user);
       return user?.avatar
