@@ -41,9 +41,7 @@ const GoogleCallback = () => {
   }
 
   return (
-    <main className="flex items-center flex-col gap-2 justify-center h-screen">
-      heloo
-    </main>
+    <main className="flex items-center flex-col gap-2 justify-center h-screen"></main>
   );
 };
 

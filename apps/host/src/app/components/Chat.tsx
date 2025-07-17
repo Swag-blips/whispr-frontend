@@ -6,11 +6,10 @@ import { Messages } from "./Messages";
 import { useChatStore } from "../store/chats.store";
 import { useSocket } from "../context/SocketContext";
 import { useEffect, useState } from "react";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { getMessages } from "../services/chats";
 import { Message } from "../types/types";
 import { useAuth } from "../context/AuthContext";
-import { useNotificationStore } from "../store/notification.store";
 
 export const Chat = () => {
   const { currentChat } = useChatStore();

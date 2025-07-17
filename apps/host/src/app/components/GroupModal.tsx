@@ -6,6 +6,8 @@ import { getAvatar } from "../utils/getUserAvatar";
 import useSWRMutation from "swr/mutation";
 import { createGroupChat } from "../services/chats";
 import toast from "react-hot-toast";
+import { User } from "../types/types";
+import { AxiosError } from "axios";
 
 interface GroupModalProps {
   open: boolean;
@@ -60,7 +62,7 @@ const GroupModal = ({ open, onClose }: GroupModalProps) => {
             <div className="flex flex-col gap-3 max-h-40 overflow-y-auto">
               {!isLoading &&
                 friends?.friends.length &&
-                friends.friends.map((user: any) => (
+                friends.friends.map((user: User) => (
                   <label
                     key={user._id}
                     className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-[#F5F5F5]"
@@ -97,8 +99,14 @@ const GroupModal = ({ open, onClose }: GroupModalProps) => {
                 });
                 mutate("userChats");
                 onClose();
-              } catch (error: any) {
-                toast.error(error.response.data.message);
+              } catch (error) {
+                if (error instanceof AxiosError) {
+                  toast.error(
+                    error.response?.data.message || "Failed to add members"
+                  );
+                } else if (error instanceof Error) {
+                  toast.error(error.message);
+                }
               }
             }}
             disabled={isCreating}
@@ -110,5 +118,5 @@ const GroupModal = ({ open, onClose }: GroupModalProps) => {
     </div>
   );
 };
- 
-export default GroupModal; 
+
+export default GroupModal;

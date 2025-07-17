@@ -1,14 +1,14 @@
 import { User } from "../types/types";
 
-export const getUserName = (otherUsers: any, senderId: string) => {
-
+export const getUserName = (
+  otherUsers: User | User[] | undefined,
+  senderId: string
+) => {
   if (Array.isArray(otherUsers)) {
-    const otherUser: User = otherUsers.find(
-      (user: User) => user._id === senderId
-    );
- 
-    return otherUser.username;
+    const otherUser = otherUsers.find((user: User) => user._id === senderId);
+
+    return otherUser?.username ? otherUser.username : "";
   }
 
-  return otherUsers.username;
+  return otherUsers?.username;
 };

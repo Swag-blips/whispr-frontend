@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { useChatStore } from "../store/chats.store";
 import useSWR from "swr";
 import { getFriends } from "../services/user";
+import { AxiosError } from "axios";
 
 type Props = {
   currentChat: Chats;
@@ -27,20 +28,17 @@ export const ChatHeader = ({ currentChat }: Props) => {
   const [selectedToAdd, setSelectedToAdd] = useState<string[]>([]);
 
   const { setCurrentChat } = useChatStore();
-  const {
-    trigger: handleRemoveUser,
-
-    isMutating,
-    error,
-  } = useSWRMutation(`/chat/group/remove/${currentChat._id}`, removeUser);
-  const {
-    trigger: updateGroup,
-    data: update,
-    isMutating: isUpdating,
-  } = useSWRMutation(`/chat/group/${currentChat._id}`, updateGroupDetails);
+  const { trigger: handleRemoveUser } = useSWRMutation(
+    `/chat/group/remove/${currentChat._id}`,
+    removeUser
+  );
+  const { trigger: updateGroup, isMutating: isUpdating } = useSWRMutation(
+    `/chat/group/${currentChat._id}`,
+    updateGroupDetails
+  );
   const {
     trigger: addMembers,
-    data: addMembersData,
+
     isMutating: isAdding,
   } = useSWRMutation(`/chat/group/add/${currentChat._id}`, addGroupMembers);
   const { data: friends, isLoading: loadingFriends } = useSWR(
@@ -64,9 +62,13 @@ export const ChatHeader = ({ currentChat }: Props) => {
       } else {
         toast.error(response.message);
       }
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
       console.log(error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else if (error instanceof AxiosError) {
+        toast.error(error.response?.data);
+      }
     }
   };
 
@@ -85,11 +87,15 @@ export const ChatHeader = ({ currentChat }: Props) => {
         setSelectedToAdd([]);
         mutate("userChats");
       } else {
-        console.log("ELSE BLOCK");
         toast.error(response.message || "Failed to add members");
       }
-    } catch (error: any) {
-      toast.error(error.response.data.message || "Failed to add members");
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message || "Failed to add members");
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   };
 
@@ -209,15 +215,23 @@ export const ChatHeader = ({ currentChat }: Props) => {
                     onClick={async () => {
                       try {
                         const data = await handleRemoveUser(user._id);
-                        console.log("REMOVE USER", data);
+
                         if (data?.success) {
                           toast.success("user successfully removed");
                         }
 
                         setCurrentChat(null);
                         mutate("userChats");
-                      } catch (error: any) {
-                        toast.error(error.response.data.message);
+                      } catch (error) {
+                        console.log(error);
+                        if (error instanceof AxiosError) {
+                          toast.error(
+                            error.response?.data.message ||
+                              "Failed to add members"
+                          );
+                        } else if (error instanceof Error) {
+                          toast.error(error.message);
+                        }
                       }
                     }}
                   >

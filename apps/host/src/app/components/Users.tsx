@@ -4,6 +4,7 @@ import { User } from "../types/types";
 import { sendFriendRequest } from "../services/friend";
 import toast from "react-hot-toast";
 import { Generating } from "@repo/ui/icons/Generating";
+import { AxiosError } from "axios";
 
 type Props = {
   user: User;
@@ -22,12 +23,17 @@ const Users = ({ user }: Props) => {
         console.log("ELSE BLOCK");
         toast.error(request.message);
       }
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message || "Failed to add members");
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      }
     } finally {
       setLoading(false);
     }
-  }; 
+  };
 
   return (
     <div className="flex items-start mx-4 mt-4 gap-2">

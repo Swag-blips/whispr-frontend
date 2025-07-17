@@ -16,10 +16,7 @@ export default function SidebarNav() {
   const notificationStore = useNotificationStore(
     (state) => state.notifications
   );
-  const { data, error, isLoading } = useSWR(
-    "notifications",
-    getUnreadNotifications
-  );
+  const { data, isLoading } = useSWR("notifications", getUnreadNotifications);
 
   useEffect(() => {
     if (data && !isLoading) {
@@ -31,12 +28,12 @@ export default function SidebarNav() {
     const handleUpdateNotification = () => {
       setNotificationCount(
         (prevNotificationCount) => prevNotificationCount + 1
-      );
-    };   
+      ); 
+    };
     handleUpdateNotification();
   }, [notificationStore]);
 
-  return (  
+  return (
     <nav className="flex flex-col gap-4">
       {open === "Search" && <SearchComponent setOpen={setOpen} />}
       {open === "Notifications" && <Notifications setOpen={setOpen} />}

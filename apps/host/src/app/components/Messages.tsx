@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { memo, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useChatStore } from "../store/chats.store";
 import { useAuth } from "../context/AuthContext";
 import { getAvatar, getMetaAvatar } from "../utils/getUserAvatar";
@@ -15,7 +15,7 @@ interface MessagesProps {
   allMessages: Message[];
   setAllMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   isLoading: boolean;
-  error: any;
+  error: Error;
 }
 
 export const Messages = ({

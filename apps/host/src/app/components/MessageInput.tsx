@@ -8,10 +8,11 @@ import { useSocket } from "../context/SocketContext";
 import { mutate } from "swr";
 import { v4 as uuid } from "uuid";
 import { useAuth } from "../context/AuthContext";
+import { Message } from "../types/types";
 
-function debounce(cb: (...args: any[]) => void, delay = 1000) {
+function debounce(cb: (...args: unknown[]) => void, delay = 1000) {
   let timeout: NodeJS.Timeout;
-  return (...args: any[]) => {
+  return (...args: unknown[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
       cb(...args);
@@ -22,7 +23,7 @@ function debounce(cb: (...args: any[]) => void, delay = 1000) {
 export const MessageInput = ({
   addMessage,
 }: {
-  addMessage: (msg: any) => void;
+  addMessage: (msg: Message) => void;
 }) => {
   const { currentChat } = useChatStore();
   const { socket } = useSocket();
@@ -66,7 +67,7 @@ export const MessageInput = ({
     if (loading) return;
     if (!content) return;
     setLoading(true);
-    if (!currentChat?._id) return;
+    if (!currentChat?._id || !user?._id) return;
     const tempId = uuid();
 
     addMessage({
@@ -74,7 +75,7 @@ export const MessageInput = ({
       tempId,
       chatId: currentChat._id,
       content,
-      senderId: user?._id,
+      senderId: user._id,
       messageType: "text",
       status: "sent",
       createdAt: new Date().toISOString(),

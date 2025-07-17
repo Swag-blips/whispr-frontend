@@ -7,7 +7,7 @@ import { NavState } from "./SidebarNav";
 import { useState } from "react";
 import { User } from "../types/types";
 import { axiosInstance } from "../api/api";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import Users from "./Users";
 import { Generating } from "@repo/ui/icons/Generating";
 

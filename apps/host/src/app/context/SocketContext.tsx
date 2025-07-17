@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  RefObject,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "./AuthContext";
 
@@ -48,15 +41,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         setOnlineUsers(users);
       });
 
-      socket.on("connect_error", (err: any) => {
+      socket.on("connect_error", (err: Error) => {
         // the reason of the error, for example "xhr poll error"
         console.log(err.message);
-
-        // some additional description, for example the status code of the initial HTTP response
-        console.log(err.description);
-
-        // some additional context, for example the XMLHttpRequest object
-        console.log(err.context);
       });
 
       return () => {

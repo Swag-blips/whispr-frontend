@@ -11,14 +11,14 @@ export const axiosInstance = axios.create({
 });
 interface QueueItem {
   resolve: (value?: string | PromiseLike<string> | undefined | null) => void;
-  reject: (reason?: any) => void;
+  reject: (reason?: string | PromiseLike<string> | undefined | null) => void;
 }
 
 let isRefreshing = false;
 let failedQueue: QueueItem[] = [];
 
 const processQueue = (
-  error: any,
+  error: string | PromiseLike<string> | null,
   token: string | undefined | null = undefined
 ) => {
   failedQueue.forEach((prom) => {
@@ -70,13 +70,21 @@ axiosInstance.interceptors.response.use(
         if (response.status === 401) {
           throw new Error("Unauthorized");
         }
-        const accessToken = await getCookie("accessToken");
+        const accessToken = await getCookie();
         processQueue(null, accessToken!);
 
         return axiosInstance(originalRequest);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("ERROR", error);
-        processQueue(error, null);
+        let errorMessage: string | null = null;
+
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (typeof error === "string") {
+          errorMessage = error;
+        }
+
+        processQueue(errorMessage, null);
         window.location.href = "/auth";
         return Promise.reject(error);
       } finally {

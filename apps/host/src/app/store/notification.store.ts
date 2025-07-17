@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { User } from "../types/types";
-import toast from "react-hot-toast";
 
 type Notification = {
   type: "sendFriendRequest" | "acceptFriendRequest";
@@ -14,7 +13,7 @@ type NotificationStore = {
   clearNotifications: () => void;
 };
 
-export const useNotificationStore = create<NotificationStore>((set, get) => ({
+export const useNotificationStore = create<NotificationStore>((set) => ({
   notifications: [],
 
   initNotifications: (userId: string) => {
@@ -22,15 +21,15 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
 
     const events = new EventSource(
       `http://localhost:3004/api/notifications/events?userId=${userId}`
-    ); 
+    );
 
     events.onmessage = (event) => {
       console.log("event", event);
-      const data = JSON.parse(event.data); 
-    
-       set((state) => ({
-         notifications: [...state.notifications, data],
-       }));
+      const data = JSON.parse(event.data);
+
+      set((state) => ({
+        notifications: [...state.notifications, data],
+      }));
     };
 
     events.onerror = (err) => {

@@ -52,7 +52,7 @@ export interface Message {
   content: string;
   receiverId?: string;
   senderId: string;
-  createdAt: Date;
+  createdAt: Date | string;
   updatedAt?: Date;
   __v?: number;
   otherUserDetails?: User;
@@ -65,5 +65,5 @@ export interface Message {
     | "left_group"
     | "group_renamed"
     | "user_promoted";
-  meta?: Record<string, any>;
+  meta?: { memberId: string; memberAvatar: string };
 }

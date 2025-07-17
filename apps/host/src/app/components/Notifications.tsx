@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../../public/Logo.svg";
 import { X } from "lucide-react";
 import { NavState } from "./SidebarNav";
@@ -12,7 +12,6 @@ import { Notification } from "../types/types";
 import { convertDate } from "../utils/convertDate";
 import { acceptFriendRequest, declineFriendRequest } from "../services/friend";
 import { Generating } from "@repo/ui/icons/Generating";
-import useSWRMutation from "swr/mutation";
 import { AxiosError } from "axios";
 type Props = {
   setOpen: (state: NavState) => void;
